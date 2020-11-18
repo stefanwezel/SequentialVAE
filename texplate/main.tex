@@ -1,0 +1,58 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{neurips,times}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{lipsum}
+
+\usepackage[numbers]{natbib}
+\setlength{\bibsep}{0.0pt}
+
+\title{Title\\ \vspace{0.5cm}\large{Topic}}
+\author{Name \\ E-Mail \\Enrollment number  \\ Seminar}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\nipsfinalcopy
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+\lipsum[1]
+\end{abstract}
+
+\section*{Introduction}
+\lipsum[2-3] (Figure \ref{fig:figure_01}).
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{figures/figure1.png}
+    \caption{\lipsum[1]}
+    \label{fig:figure_01}
+\end{figure}
+
+\section*{Relevant literature}
+\lipsum[4-6]\cite{Papamakarios2016, Ardizzone2019}
+
+\section*{Relevant methods}
+\lipsum[4-6]\cite{Cranmer2020}
+
+\section*{Relevant results}
+\lipsum[7-12]\cite{Brehmer2020}
+
+\section*{Implications and outlook}
+\lipsum[4-12]\cite{Green2020,Greenberg2019}
+
+\section*{Conclusion}
+\lipsum[1-2]
+
+\section*{Acknowledgments}
+\lipsum[1]
+
+\bibliographystyle{unsrtnat}
+\bibliography{refs}
+
+\end{document}
