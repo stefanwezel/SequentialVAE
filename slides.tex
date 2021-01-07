@@ -110,6 +110,7 @@
 \frametitle{Overview}
 %\framesubtitle{}
 \begin{itemize}%\setlength\itemsep{1.5em}
+	\item Introduction
 	\item What are disentangled representations (intuition)
 	\item Why disentangled representations
 	\item Formal description of disentangled representations
@@ -119,6 +120,27 @@
 \end{itemize}
 \end{frame} 
 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Overview}
+%\framesubtitle{}
+\begin{itemize}%\setlength\itemsep{1.5em}
+	\item Using Sequential VAE ( -> Unsupervised representation learning)
+	\item Represent information from different temporal scales in corresponding latent subspaces
+	\item Claim that they achieve disentanglement with respect to sequence (speaker) and segment (content) information
+	\item would mean that those latent variables then can be used separately
+	\begin{itemize}
+		\item speaker verification
+		\item denoising
+		\item ...
+	\end{itemize}
+\end{itemize}
+\end{frame} 
 
 
 
@@ -166,20 +188,37 @@
 
 
 
-
-
 \setbeamercolor{background canvas}{bg=white}
 \setbeamercolor{normal text}{fg=darkgrey}
 \usebeamercolor[fg]{normal text}
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
-\frametitle{What are disentangled representations formally? }
-\framesubtitle{A field-trip to group theory}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Signal can get shifted or warped
-	\item the set of these transformations make up a symmetry group
-	\item signal's meaning is preserved
-	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: important concepts}
+\begin{itemize}%look at simple example here
+	\item Group
+	\begin{itemize}
+		\item tuple of operation and set
+		\item set is closed under operation, there is identity element, and inverse for every element, associativity
+	\end{itemize}
+	\item Symmetry group
+	\begin{itemize}
+		%\item A bit more general
+		\item Group action, that leaves object (defined through set/sets) invariant
+		%\item has group operation (i.e. composition)
+		%\item set of transformations on some object that preserve object
+		%For example: If we shift signal, it's still the signal... 
+	\end{itemize}
+	\item Group action
+	\begin{itemize}
+		\item Actions are results of symmetry transformations of set (i.e. set of changed order)
+		\item $\cdot :G \times X \mapsto X$
+	\end{itemize}
+	\item Direct product
+	\begin{itemize}
+		\item $G = G_1 \times ... \times G_n$
+		\item Group conditions must hold for group and each subgroup
+	\end{itemize}
 \end{itemize}
 \end{frame} 
 
@@ -190,7 +229,45 @@
 \usebeamercolor[fg]{normal text}
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
-\frametitle{What are disentangled representations formally? }
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: What is disentanglement in terms of group theory?}
+\begin{itemize}%\setlength\itemsep{1.5em}
+	\item Signal can get shifted or warped
+	\item the set of these transformations make up a symmetry group
+	\item signal's meaning is preserved
+	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
+\end{itemize}
+\end{frame} 
+
+
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: Disentangle our example formally}
+\begin{itemize}%\setlength\itemsep{1.5em}
+	\item Signal can get shifted or warped
+	\item the set of these transformations make up a symmetry group
+	\item signal's meaning is preserved
+	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
+\end{itemize}
+\end{frame} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Disentangled Representations Formally}
 \framesubtitle{A field-trip to group theory}
 \begin{itemize}%\setlength\itemsep{1.5em}
 	\item This symmetry group can be decomposed into symmetry subgroups
@@ -247,18 +324,23 @@
 \frametitle{What are disentangled representations formally? }
 \framesubtitle{Disentangled Representation}
 \begin{itemize}%\setlength\itemsep{1.5em}
-	\item Assume Symmetries of $W$ decompose into direct product $G = G_1 \times ... \times G_n$
+	\item Assume symmetry transformations $G$ of $W$ decompose into direct product $G = G_1 \times ... \times G_n$
 	\item Representation is disentangled if
 	\begin{itemize}
-		\item action $\cdot : G \times Z \mapsto Z$
-		\item equivariant map $f:W \mapsto Z$ between actions on $W$ and $Z$
-		\item Decomposition $Z = Z_{shifted} \times Z_{warped}$
-		\item where $Z_{shifted}$ is only affected by shifts in $W$ ($G_{shifts}$)
-		\item and $Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
-		%\item action $\cdot$ on $Z$ is disentangled according to definition from before
+		%\item action $\cdot : G \times Z \mapsto Z$
+		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between actions on $W$ and $Z$
+		\item such a map would split $Z$ into independent subspaces, thus satisfying:
+		\begin{itemize}
+					%representation reflects transformation applied to input
+			\item Decomposition $Z = Z_{shifted} \times Z_{warped}$
+			\item where $Z_{shifted}$ is only affected by shifts in $W$ ($G_{shifts}$)
+			\item and $Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
+			\item Thus each subspace can be transformed by the corresponding symmetry (like shift or warp independently)
+		\end{itemize}
+				%\item action $\cdot$ on $Z$ is disentangled according to definition from before
 	\end{itemize}
 	\item There may be more criteria (preserving group structure, isomorphisms, ...) but for the intuition this is sufficient
-	\item (Note that much prior knowledge about our world was injected here)
+	%\item (Note that much prior knowledge about our world was injected here)
 \end{itemize}
 \end{frame} 
 
@@ -275,7 +357,7 @@
 \begin{itemize}%\setlength\itemsep{1.5em}
 	\item With respect to a decomposition into two
 	\item Setting: 10 sentences, 630 speakers
-	\item How can we formulate this in group theory?
+	\item How can we formulate this in group theory terms?
 \end{itemize}
 \end{frame} 
 
