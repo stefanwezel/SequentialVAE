@@ -293,17 +293,7 @@
 \end{frame} 
 
 
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{Disentangled Representations Formally}
-\framesubtitle{A field-trip to group theory: Disentangle our example formally}
-\begin{figure}
-	\includegraphics[width=1\linewidth]{figures/intution_3x3.pdf}
-\end{figure}
-\end{frame} 
+
 
 
 \setbeamercolor{background canvas}{bg=white}
@@ -320,6 +310,12 @@
 	\item They propose to store sequence information in $z_2$ and segment information in $z_1$
 	\item Thus, they need to find an equivariant map $f:W\mapsto Z$, so that $z_1$ is only affected by actions on $G_{sequence}$ and vice versa
 \end{itemize}
+\begin{figure}
+	\includegraphics[width=.6\linewidth]{figures/fm_variables.jpeg}
+\end{figure}
+\begin{tiny}
+	Image source: Hsu et al., 2017 
+\end{tiny}
 \end{frame} 
 
 
@@ -374,17 +370,48 @@
 \usebeamercolor[fg]{normal text}
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
-\frametitle{Back to the paper}
-\framesubtitle{How did they do it?}
+\frametitle{FHVAE}
+\framesubtitle{Regularization}
 \begin{itemize}
-	\item regularize z2 by sequence dependent prior (lookup table of s-vectors)
-	\item and z1 by sequence independent prior 
-	\item optimize latent space at segment level
+	\item What is the sequence dependent prior $\mu_2$?
+	\begin{itemize}
+		\item imagine a word vector (->s-vector)
+		\item $g(y) = \mu_2$ can be viewed as a differentiable lookup table (embedding in tf, pytorch)
+	\end{itemize}
+	\item regularize z2 by sequence dependent prior 
+	\item and z1 by sequence independent prior  (i.e. standard Gaussian)
+	\item $\mu_2$ can be found in closed form
+	%\item optimize latent space at segment level
 	%\item optmization is outsourced to $\mu_2$
 \end{itemize}
-%\begin{figure}
-%	\includegraphics[width=.7\linewidth]{}
-%\end{figure}
+\end{frame} 
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Self-supervised discriminative objective}
+\begin{itemize}
+	\item Train $z_2$ to predict sequence index (of sequence in lookup table)
+\end{itemize}
+\end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Results - TIMIT Speaker Verification} % Maybe rather do ASR here
+\begin{figure}
+	\includegraphics[width=.95\linewidth]{figures/timit_error.png}
+	\caption{Comparison of speaker verification equal error rate (EER) on TIMIT dataset (lower is better)}
+	%\caption{World states are determinded by two generative factors, a change in those is reflected in the two corresponding latent variables, our $f$ maps to}
+\end{figure}
 \end{frame} 
 
 
