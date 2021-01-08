@@ -1,7 +1,7 @@
 % !TeX program = xelatex
 \documentclass[9pt]{beamer}
 \usepackage{xcolor}
-\definecolor{orange}{HTML}{F67941}
+\definecolor{orange}{HTML}{EF767A}
 \definecolor{red}{HTML}{AC454A}
 \definecolor{brown}{HTML}{EAD296}
 \definecolor{darkgrey}{HTML}{313630}
@@ -154,13 +154,13 @@
 \framesubtitle{Intuition}
 	\begin{itemize}%\setlength\itemsep{1.5em}
 	\item encode distinct generating factors in separate subsets of latent space dimensions
-	\item i.e. color as one subspace, translation, as another
-	\item The exact definition is often discussed, we will have a look at a proposed one
+	%\item i.e. color as one subspace, translation, as another
+	%\item The exact definition is often discussed, we will have a look at a proposed one
 	\end{itemize}
 %\animategraphics[autoplay,loop,width=\linewidth/2]{10}{disentangled_scene-}{0}{19}
 \begin{figure}
-\includegraphics[width=0.7\linewidth]{disentanglement_intuition.png}
-\caption{adslkfjds...Source:Higgins, Irina, et al. }
+	\includegraphics[width=.95\linewidth]{figures/intution_3x3.pdf}
+	%\caption{World states are determinded by two generative factors, a change in those is reflected in the two corresponding latent variables, our $f$ maps to}
 \end{figure}
 \end{frame} 
 
@@ -212,7 +212,7 @@
 	\item Group action
 	\begin{itemize}
 		\item Actions are results of symmetry transformations of set (i.e. set of changed order)
-		\item $\cdot :G \times X \mapsto X$
+		%\item $\cdot :G \times X \mapsto X$
 	\end{itemize}
 	\item Direct product
 	\begin{itemize}
@@ -232,15 +232,153 @@
 \frametitle{Disentangled Representations Formally}
 \framesubtitle{A field-trip to group theory: What is disentanglement in terms of group theory?}
 \begin{itemize}%\setlength\itemsep{1.5em}
-	\item Signal can get shifted or warped
-	\item the set of these transformations make up a symmetry group
-	\item signal's meaning is preserved
-	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
+	\item Disentangled group actions
+	\begin{itemize}
+		\item Result of transformations that only change certain aspect of world, but leave others invariant
+	\end{itemize}
+	\item Assuming $G$ can be decomposed into direct product symmetry subgroups $G_i$
+	\item We want mapping $f:W \mapsto Z$
+	\item Symmetry $G$ on $W$ should be preserved in $Z$, $G \times Z \mapsto Z$
+	\begin{itemize}
+		\item $g \cdot f(w) = f(g\cdot w)$ -> equivariant map
+	\end{itemize}
+\end{itemize}
+\end{frame} 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: What is disentanglement in terms of group theory?}
+\begin{itemize}%\setlength\itemsep{1.5em}
+	\item Representation is disentangled if
+	\begin{itemize}
+		%\item action $\cdot : G \times Z \mapsto Z$
+		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between actions on $W$ and $Z$
+		\item such a map would split $Z$ into independent subspaces, thus satisfying:
+		\begin{itemize}
+			%representation reflects transformation applied to input
+			\item Decomposition $Z = Z_{1} \times ... \times Z_{n}$
+			\item where $Z_{i}$ is only affected by transformations $G_i$ in $W$% ($G_{j\neq i}$)
+			\item and $Z_i$ invariant to all $G_{j \neq i}$ in $W$ %$Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
+			\item Thus each subspace $Z_i$ can be transformed ONLY by the corresponding symmetry of $W$%(like shift or warp independently)
+		\end{itemize}
+		%\item action $\cdot$ on $Z$ is disentangled according to definition from before
+	\end{itemize}
+	%\item There may be more criteria (preserving group structure, isomorphisms, ...) but for the intuition this is sufficient
+	%\item (Note that much prior knowledge about our world was injected here)
 \end{itemize}
 \end{frame} 
 
 
 
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: Disentangle our example formally}
+\begin{itemize}%\setlength\itemsep{1.5em}
+	\item signal $x(t) = sin(h_0 \cdot t) + sin(h_1 \cdot t)$ with $h_0 \sim \mathcal{N}(0,1),\;h_1 \sim \mathcal{N}(5,1);$
+	\item The set of possible values for $h_0, h_1$ make up our $W$
+	\item The group of symmetries acting on this $W$ decompose into $G = G_{h_0} \times G_{h_1}$
+	\item We want to find an equivariant map $f:W\mapsto Z$ with $Z \in \mathbb{Z}^2$
+	\item so that changes of $h_0$ result ONLY in changes in $z_0$ and changes of $h_1$ ONLY in $z_2$
+	\item Note, that this requires prior knowledge of generating factors in our world
+\end{itemize}
+\end{frame} 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Disentangled Representations Formally}
+\framesubtitle{A field-trip to group theory: Disentangle our example formally}
+\begin{figure}
+	\includegraphics[width=1\linewidth]{figures/intution_3x3.pdf}
+\end{figure}
+\end{frame} 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Back to the paper}
+\framesubtitle{Did they achieve disentanglement?}
+\begin{itemize}
+	\item Disentangled with respect to what decomposition?
+	\item Assuming there is a decomposition $G = G_{sequence} \times G_{segment}$
+	\item This should be reflected in $Z= (z_1, z_2)$
+	\item They propose to store sequence information in $z_2$ and segment information in $z_1$
+	\item Thus, they need to find an equivariant map $f:W\mapsto Z$, so that $z_1$ is only affected by actions on $G_{sequence}$ and vice versa
+\end{itemize}
+\end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Encoder}
+\begin{figure}
+	\includegraphics[width=1\linewidth]{figures/fhvae_encoder.pdf}
+\end{figure}
+\end{frame} 
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Decoder}
+\begin{figure}
+	\includegraphics[width=.8\linewidth]{figures/fhvae_decoder.pdf}
+\end{figure}
+\end{frame} 
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{Back to the paper}
+\framesubtitle{How did they do it?}
+\begin{itemize}
+	\item regularize z2 by sequence dependent prior (lookup table of s-vectors)
+	\item and z1 by sequence independent prior 
+	\item optimize latent space at segment level
+	%\item optmization is outsourced to $\mu_2$
+\end{itemize}
+%\begin{figure}
+%	\includegraphics[width=.7\linewidth]{}
+%\end{figure}
+\end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{}
+\framesubtitle{}
+\begin{itemize}
+	\item 
+\end{itemize}
+\end{frame} 
 
 
 \setbeamercolor{background canvas}{bg=white}
@@ -253,7 +391,9 @@
 \begin{itemize}%\setlength\itemsep{1.5em}
 	\item Signal can get shifted or warped
 	\item the set of these transformations make up a symmetry group
-	\item signal's meaning is preserved
+	\item This can be decomposed into shifts and warps/subsets of original set (all shifted $\times$ all warped)
+	%\item signal's meaning is preserved
+	\item Either content is preserved, or speaker is preserved
 	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
 \end{itemize}
 \end{frame} 
