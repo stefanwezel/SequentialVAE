@@ -25,7 +25,7 @@
 
 %\setbeamerfont{page number}{size=\Huge}
 
-%\setbeamertemplate{itemize items}[circle]
+%\setbeamertemplate{itemize itemjpegs}[circle]
 \useinnertheme{circles}
 \setbeamercolor{palette primary}{bg=orange,fg=white}
 %\setbeamercolor{palette secondary}{bg=red,fg=white}
@@ -114,9 +114,9 @@
 	\item What are disentangled representations (intuition)
 	\item Why disentangled representations
 	\item Formal description of disentangled representations
-	\item SequentialVAE
-	\item Did they achieve disentanglement?
-	\item Other approaches and challenges
+	\item Disentanglement in the context of the paper
+	\item Factorized Hierarchical VAE
+	%\item Other approaches and challenges
 \end{itemize}
 \end{frame} 
 
@@ -130,15 +130,22 @@
 \frametitle{Overview}
 %\framesubtitle{}
 \begin{itemize}%\setlength\itemsep{1.5em}
-	\item Using Sequential VAE ( -> Unsupervised representation learning)
-	\item Represent information from different temporal scales in corresponding latent subspaces
-	\item Claim that they achieve disentanglement with respect to sequence (speaker) and segment (content) information
-	\item would mean that those latent variables then can be used separately
+	\item Propose Sequential Factorized Hierarchical VAE (FHVAE)
+	\item Learn factorized latent space
+	\item Focus on speech data
 	\begin{itemize}
-		\item speaker verification
-		\item denoising
-		\item ...
+		\item Sequence level (Speaker, ...) representation
+		\item Segment level (content, noise, ...) representation
 	\end{itemize}
+	\item Exploit different temporal scales of speech sequence data
+	%\item Represent information from different temporal scales in corresponding latent subspaces
+	%\item Claim that they achieve disentanglement with respect to sequence (speaker) and segment (content) information
+	%\item would mean that those latent variables then can be used separately
+	%\begin{itemize}
+	%	\item speaker verification
+	%	\item denoising
+	%	\item ...
+	%\end{itemize}
 \end{itemize}
 \end{frame} 
 
@@ -153,13 +160,13 @@
 \frametitle{What is disentanglement?}
 \framesubtitle{Intuition}
 	\begin{itemize}%\setlength\itemsep{1.5em}
-	\item encode distinct generating factors in separate subsets of latent space dimensions
+	\item Encode distinct generating factors in separate subsets of latent space dimensions
 	%\item i.e. color as one subspace, translation, as another
 	%\item The exact definition is often discussed, we will have a look at a proposed one
 	\end{itemize}
 %\animategraphics[autoplay,loop,width=\linewidth/2]{10}{disentangled_scene-}{0}{19}
 \begin{figure}
-	\includegraphics[width=.95\linewidth]{figures/intution_3x3.pdf}
+	\includegraphics[width=.93\linewidth]{figures/intution_3x3.pdf}
 	%\caption{World states are determinded by two generative factors, a change in those is reflected in the two corresponding latent variables, our $f$ maps to}
 \end{figure}
 \end{frame} 
@@ -176,13 +183,11 @@
 \frametitle{Why learn disentangled representations?}
 \framesubtitle{Motivation}
 \begin{itemize}%\setlength\itemsep{1.5em}
-	\item Gives us an exact idea, of what variables were used, to come to a result
-	\begin{itemize}
-			\item Fairness in ML (exact)
-			\item Explainability/Interpretability
-			\item Overall, a model just becomes more usable if latent variables carry semantic meaning		
-	\end{itemize}
-
+	\item Explainability/Interpretability
+	\item Fairness
+	\item Scientific modeling %we often know, what generating factors are, and want our model to reflect those
+	\item Speaker verification %independent of content
+	\item Denoising
 \end{itemize}
 \end{frame} 
 
@@ -203,23 +208,25 @@
 	\end{itemize}
 	\item Symmetry group
 	\begin{itemize}
+		\item Set of transformations that leave object (i.e. another set) invariant
+		\item Operation is composition of transformations
 		%\item A bit more general
-		\item Group action, that leaves object (defined through set/sets) invariant
+		%\item Group action, that leaves object (defined through set/sets) invariant
 		%\item has group operation (i.e. composition)
 		%\item set of transformations on some object that preserve object
 		%For example: If we shift signal, it's still the signal... 
 	\end{itemize}
 	\item Group action
 	\begin{itemize}
-		\item Actions are results of symmetry transformations of set (i.e. set of changed order)
-		%\item $\cdot :G \times X \mapsto X$
+		\item Actions are results of symmetry transformations on object (i.e. set of changed order (permuation))
+		%For example permutation
 	\end{itemize}
 	\item Direct product
 	\begin{itemize}
 		\item $G = G_1 \times ... \times G_n$
-		\item Group conditions must hold for group and each subgroup
+		%\item Group conditions must hold for group and each subgroup
 	\end{itemize}
-\end{itemize}
+ \end{itemize}
 \end{frame} 
 
 
@@ -234,13 +241,15 @@
 \begin{itemize}%\setlength\itemsep{1.5em}
 	\item Disentangled group actions
 	\begin{itemize}
-		\item Result of transformations that only change certain aspect of world, but leave others invariant
+		\item Result of certain subset $G_i$ of transformations that only change certain subset $W_i$ of object, but leave others invariant
 	\end{itemize}
-	\item Assuming $G$ can be decomposed into direct product symmetry subgroups $G_i$
-	\item We want mapping $f:W \mapsto Z$
-	\item Symmetry $G$ on $W$ should be preserved in $Z$, $G \times Z \mapsto Z$
+	\item $\rightarrow$ If we observe disentangled group actions in the world, we want to model those
+	%G are all the symmetries of our beautiful world
+	\item Then we can assume $G$ can be decomposed into direct product symmetry subgroups $G_i$
+	\item To model those, we want to find mapping $f:W \mapsto Z$
+	\item Symmetry $G$ on $W$ should be preserved in $Z$%, $G \times Z \mapsto Z$
 	\begin{itemize}
-		\item $g \cdot f(w) = f(g\cdot w)$ -> equivariant map
+		\item $g \cdot f(w) = f(g\cdot w)$ $\rightarrow$ equivariant map
 	\end{itemize}
 \end{itemize}
 \end{frame} 
@@ -254,20 +263,19 @@
 \frametitle{Disentangled Representations Formally}
 \framesubtitle{A field-trip to group theory: What is disentanglement in terms of group theory?}
 \begin{itemize}%\setlength\itemsep{1.5em}
-	\item Representation is disentangled if
-	\begin{itemize}
+	\item Representation is disentangled if:
 		%\item action $\cdot : G \times Z \mapsto Z$
-		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between actions on $W$ and $Z$
+		\item equivariant map $f:W \mapsto Z$%, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between actions on $W$ and $Z$
 		\item such a map would split $Z$ into independent subspaces, thus satisfying:
 		\begin{itemize}
 			%representation reflects transformation applied to input
 			\item Decomposition $Z = Z_{1} \times ... \times Z_{n}$
 			\item where $Z_{i}$ is only affected by transformations $G_i$ in $W$% ($G_{j\neq i}$)
 			\item and $Z_i$ invariant to all $G_{j \neq i}$ in $W$ %$Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
-			\item Thus each subspace $Z_i$ can be transformed ONLY by the corresponding symmetry of $W$%(like shift or warp independently)
+			\item Thus each subspace $Z_i$ can be transformed ONLY by the corresponding symmetry $G_i$ on $W$ (or on $Z$)%(like shift or warp independently)
+			%\item We can say, $G_i$ results in disentangled group actions in $Z$
 		\end{itemize}
 		%\item action $\cdot$ on $Z$ is disentangled according to definition from before
-	\end{itemize}
 	%\item There may be more criteria (preserving group structure, isomorphisms, ...) but for the intuition this is sufficient
 	%\item (Note that much prior knowledge about our world was injected here)
 \end{itemize}
@@ -275,22 +283,22 @@
 
 
 
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{Disentangled Representations Formally}
-\framesubtitle{A field-trip to group theory: Disentangle our example formally}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item signal $x(t) = sin(h_0 \cdot t) + sin(h_1 \cdot t)$ with $h_0 \sim \mathcal{N}(0,1),\;h_1 \sim \mathcal{N}(5,1);$
-	\item The set of possible values for $h_0, h_1$ make up our $W$
-	\item The group of symmetries acting on this $W$ decompose into $G = G_{h_0} \times G_{h_1}$
-	\item We want to find an equivariant map $f:W\mapsto Z$ with $Z \in \mathbb{Z}^2$
-	\item so that changes of $h_0$ result ONLY in changes in $z_0$ and changes of $h_1$ ONLY in $z_2$
-	\item Note, that this requires prior knowledge of generating factors in our world
-\end{itemize}
-\end{frame} 
+%\setbeamercolor{background canvas}{bg=white}
+%\setbeamercolor{normal text}{fg=darkgrey}
+%\usebeamercolor[fg]{normal text}
+%\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+%\begin{frame}
+%\frametitle{Disentangled Representations Formally}
+%\framesubtitle{A field-trip to group theory: Disentangle our example formally}
+%\begin{itemize}%\setlength\itemsep{1.5em}
+%	\item signal $x(t) = sin(h_0 \cdot t) + sin(h_1 \cdot t)$ with $h_0 \sim \mathcal{N}(0,1),\;h_1 \sim \mathcal{N}(5,1);$
+%	\item The set of possible values for $h_0, h_1$ make up our $W$
+%	\item The group of symmetries acting on this $W$ decompose into $G = G_{h_0} \times G_{h_1}$
+%	\item We want to find an equivariant map $f:W\mapsto Z$ with $Z \in \mathbb{Z}^2$
+%	\item so that changes of $h_0$ result ONLY in changes in $z_0$ and changes of $h_1$ ONLY in $z_2$
+%	\item Note, that this requires prior knowledge of generating factors in our world
+%\end{itemize}
+%\end{frame} 
 
 
 
@@ -307,11 +315,12 @@
 	\item Disentangled with respect to what decomposition?
 	\item Assuming there is a decomposition $G = G_{sequence} \times G_{segment}$
 	\item This should be reflected in $Z= (z_1, z_2)$
-	\item They propose to store sequence information in $z_2$ and segment information in $z_1$
-	\item Thus, they need to find an equivariant map $f:W\mapsto Z$, so that $z_1$ is only affected by actions on $G_{sequence}$ and vice versa
+	\item $z_1$ segment, $z_2$ sequence
+	%\item They propose to store sequence information in $z_2$ and segment information in $z_1$
+	\item Find an equivariant map $f:W\mapsto Z$, so that $z_2$ is only affected by actions of $G_{sequence}$ and vice versa
 \end{itemize}
 \begin{figure}
-	\includegraphics[width=.6\linewidth]{figures/fm_variables.jpeg}
+	\includegraphics[width=.9\linewidth]{figures/fm_variables.png}
 \end{figure}
 \begin{tiny}
 	Image source: Hsu et al., 2017 
@@ -326,7 +335,11 @@
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
 \frametitle{FHVAE}
-\framesubtitle{Encoder}
+\framesubtitle{Encoder$_{\theta}$}
+\begin{itemize}
+	\item Sample $z_2$ based on hidden state of LSTM
+	\item $z_1$ is conditioned on $x$ and $z_2$
+\end{itemize}
 \begin{figure}
 	\includegraphics[width=1\linewidth]{figures/fhvae_encoder.pdf}
 \end{figure}
@@ -338,7 +351,11 @@
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
 \frametitle{FHVAE}
-\framesubtitle{Decoder}
+\framesubtitle{Decoder$_{\phi}$}
+\begin{itemize}
+	\item Based on $z_1$ and $z_2$, form new hidden state
+	\item sample $\hat{x}$, based on that
+\end{itemize}
 \begin{figure}
 	\includegraphics[width=.8\linewidth]{figures/fhvae_decoder.pdf}
 \end{figure}
@@ -354,15 +371,18 @@
 \begin{frame}
 \frametitle{FHVAE}
 \framesubtitle{Objective}
+%\begin{itemize}
+%	\item regularize $z_1$ globally (through standard Gaussian prior)
+%	\item regularize $z_2$ through sequence dependent prior $\tilde{\mu_2}$
+%\end{itemize}
 \begin{align*}
-\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) + log\;p_{\theta} + const.\\
-\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
--& \mathbb{E}_{q_{\phi}(z_2^{(n)}|x^{(n)})} \left[ D_{KL}(q_{\phi}(z_1^{(n)}|x^{(n)},z_2^{(n)}) ||\underbrace{p_{\theta}(z_1^{(n)})}_{\text{sequ. ind.}}) \right]\\
--&D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\tilde{\mu_2})}_{\text{seq. dep. prior}})
+\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \color{red}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) \color{black}+\color{blue} \alpha \cdot log\;p_{\theta}(\tilde{\mu_2})\color{black} + const.\\
+\text{with }\color{red}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &\color{red}= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
+-& \color{red}\mathbb{E}_{q_{\phi}(z_2^{(n)}|x^{(n)})} \left[ D_{KL}(q_{\phi}(z_1^{(n)}|x^{(n)},z_2^{(n)}) ||\underbrace{p_{\theta}(z_1^{(n)})}_{\text{sequ. ind.}}) \right]\\
+-&\color{red}D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\tilde{\mu_2})}_{\text{seq. dep. prior}})\\
+\color{black}\text{and }\color{blue}log\;p_{\theta}(\tilde{\mu_2}) &=\color{blue} log\;p(z_{2}^{(i,n)}|\tilde{\mu_2}^{(i)}) - log(\sum_{j=1}^{M}p(z_2^{(i,n)}|\mu_2^{(j)}))
 \end{align*}
 \end{frame} 
-
-
 
 
 \setbeamercolor{background canvas}{bg=white}
@@ -371,32 +391,100 @@
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
 \frametitle{FHVAE}
-\framesubtitle{Regularization}
+\framesubtitle{S-vector $\mu_2$}
 \begin{itemize}
-	\item What is the sequence dependent prior $\mu_2$?
+	\item What is the sequence dependent prior $\mu_2$ (s-vector)?
 	\begin{itemize}
-		\item imagine a word vector (->s-vector)
-		\item $g(y) = \mu_2$ can be viewed as a differentiable lookup table (embedding in tf, pytorch)
+		\item imagine a word vector 
+		\item s-vector for every sequence
+		\item Ideally, similarities in sequences should be reflected in s-vectors close in euclidian space
+		\item $g(sequence\;id) = \mu_2$ can be viewed as a differentiable lookup table (embedding in tf, pytorch)
+		\item For test (where there is no seq.id., it can be found in closed form solution)
 	\end{itemize}
-	\item regularize z2 by sequence dependent prior 
-	\item and z1 by sequence independent prior  (i.e. standard Gaussian)
-	\item $\mu_2$ can be found in closed form
+	%\item $\mu_2$ can be estimated in closed form
 	%\item optimize latent space at segment level
 	%\item optmization is outsourced to $\mu_2$
 \end{itemize}
 \end{frame} 
 
+
+
 \setbeamercolor{background canvas}{bg=white}
 \setbeamercolor{normal text}{fg=darkgrey}
 \usebeamercolor[fg]{normal text}
 \setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
 \begin{frame}
 \frametitle{FHVAE}
-\framesubtitle{Self-supervised discriminative objective}
+\framesubtitle{Objective - Sequence variational lower bound}
+\begin{align*}
+\mathcal{L}(\theta, \phi, X)& = %\sum_{n=1}^N \mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) + log\;p_{\theta} + const.\\
+%\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &= 
+\underbrace{log\;p(x|z_1, z_2)}_{\text{reconstruction}}\\%prob. of obs. data under learned posterior\\
+-&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_1}, \sigma_{z_1})||\mathcal{N}(0,1))}_{\text{regularize $z_1$ through global prior}}\\
+-&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\tilde{\mu_2},0.5))}_{\text{regularize $z_2$ through seq. dep. prior}}\\
++&\underbrace{log\;p(\tilde{\mu_2}) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\tilde{\mu_2}$ under standard Gaussian prior}}
+\end{align*}
+\end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Objective - Discriminative objective}
+\begin{align*}
+log\;p(sequence\;id | z_2)& = \underbrace{CrossEntropy(\underbrace{\frac{-(\mu_{z_2} - \mu_2)^2}{2 \cdot e^{log\;0.25}}}_{\text{depends on $\mu_{z_2}$ and $\mu_2$}},\;sequence\;id)}_{\text{Try to predict sequence id, with $\mu_{z_2}$}}
+\end{align*}
+\end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Objective - Discriminative segment variational lower bound}
+\begin{align*}
+\mathcal{L}^{dis}(\theta, \phi;x)& = \mathcal{L}(\theta, \phi, X) + \alpha \cdot log\;p(sequence\;id | z_2)
+\end{align*}
 \begin{itemize}
-	\item Train $z_2$ to predict sequence index (of sequence in lookup table)
+	\item Combined objective
+	\begin{itemize}
+		\item encourage factorization
+	\end{itemize}
+	\item discriminative objective can be adjusted through $\alpha$ hyperparameter
+	\begin{itemize}
+		\item encourage $\mu_{z_2}$ to become more meaningful
+	\end{itemize}
 \end{itemize}
 \end{frame} 
+
+%\setbeamercolor{background canvas}{bg=white}
+%\setbeamercolor{normal text}{fg=darkgrey}
+%\usebeamercolor[fg]{normal text}
+%\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+%\begin{frame}
+%\frametitle{FHVAE}
+%\framesubtitle{Short recap}
+%\begin{itemize}
+	%\item We want to disentangle sequential data with respect to sequence and segment variables
+%	\item We do this by learning two latent variables $z_1$ and $z_2$ with FHVAE
+%	\item Disentanglement between the two is encouraged through loss term%an adaptive regularization
+%	\item Now, we want to see, whether it worked
+%\end{itemize}
+%\end{frame} 
+
+
+
+
+
+
+
 
 
 
@@ -407,12 +495,79 @@
 \begin{frame}
 \frametitle{FHVAE}
 \framesubtitle{Results - TIMIT Speaker Verification} % Maybe rather do ASR here
+\begin{itemize}
+	\item Task: Speaker verification
+	\begin{itemize}
+		\item Allows quantitative analysis of performance and of quality of disentanglement
+		\item use FHVAE's s-vector $\mu_2$ to predict speaker
+	\end{itemize}
+	\item Compare i-vector baseline
+	\begin{itemize}
+		\item i-vector is used in SOTA speaker verification approaches
+		\item low dim subspace of GMM universal background model
+		\item subspace of speaker (content-independent) information
+		%\item contain sequence level info (-> speaker)
+		%\item Sequence features from this GMM
+	\end{itemize}
+\end{itemize}
+\end{frame} 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Results - TIMIT Speaker Verification} % Maybe rather do ASR here
+\begin{itemize}
+	\item Unsupervised speaker verification (Raw column)
+	\item Equal error rates (lower is better)
+	\item use $\mu_1$ as sanity check
+\end{itemize}
 \begin{figure}
-	\includegraphics[width=.95\linewidth]{figures/timit_error.png}
-	\caption{Comparison of speaker verification equal error rate (EER) on TIMIT dataset (lower is better)}
+	\includegraphics[width=.8\linewidth]{figures/timit_error.png}
+	%\caption{Comparison of speaker verification equal error rate (EER) on TIMIT dataset (lower is better)}
 	%\caption{World states are determinded by two generative factors, a change in those is reflected in the two corresponding latent variables, our $f$ maps to}
 \end{figure}
 \end{frame} 
+
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Looking Back} % Maybe rather do ASR here
+\begin{itemize}
+	\item Some evidence towards disentangling with respect to sequence-segment decomposition
+	\begin{itemize}
+		\item other decompositions may prove more challenging
+		\item speaker gender, speaker age, language as more fine grained decompositions
+	\end{itemize}
+	\item I had trouble disentangling simple examples
+	\item Good performance on speaker verification and denoising task
+\end{itemize}
+\end{frame} 
+
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{References}
+\framesubtitle{}
+\begin{itemize}
+	\item Hsu, W.N., Zhang, Y. and Glass, J., 2017. Unsupervised learning of disentangled and interpretable representations from sequential data. In Advances in neural information processing systems (pp. 1878-1889).
+	\item Higgins, I., Amos, D., Pfau, D., Racaniere, S., Matthey, L., Rezende, D. and Lerchner, A., 2018. Towards a definition of disentangled representations. arXiv preprint arXiv:1812.02230.
+	\item Scott, W.R., 2012. Group theory. Courier Corporation.
+	\item Kingma, D.P. and Welling, M., 2013. Auto-encoding variational bayes. arXiv preprint arXiv:1312.6114.
+\end{itemize}
+\end{frame} 
+
 
 
 
@@ -516,7 +671,7 @@
 	\item Representation is disentangled if
 	\begin{itemize}
 		%\item action $\cdot : G \times Z \mapsto Z$
-		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between actions on $W$ and $Z$
+		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between  $W$ and $Z$
 		\item such a map would split $Z$ into independent subspaces, thus satisfying:
 		\begin{itemize}
 					%representation reflects transformation applied to input
