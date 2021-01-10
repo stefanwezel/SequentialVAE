@@ -5,6 +5,8 @@
 \definecolor{red}{HTML}{AC454A}
 \definecolor{brown}{HTML}{EAD296}
 \definecolor{darkgrey}{HTML}{313630}
+\definecolor{cornflower}{HTML}{247BA0}
+\definecolor{sienna}{HTML}{6C464F}
 \usefonttheme{professionalfonts} % using non standard fonts for beamer
 \usefonttheme{serif} % default family is serif
 \usepackage{fontspec}
@@ -208,7 +210,7 @@
 	\end{itemize}
 	\item Symmetry group
 	\begin{itemize}
-		\item Set of transformations that leave object (i.e. another set) invariant
+		\item Set of transformations that leave object $W$ (i.e. another set) invariant
 		\item Operation is composition of transformations
 		%\item A bit more general
 		%\item Group action, that leaves object (defined through set/sets) invariant
@@ -336,15 +338,54 @@
 \begin{frame}
 \frametitle{FHVAE}
 \framesubtitle{Encoder$_{\theta}$}
-\begin{itemize}
-	\item Sample $z_2$ based on hidden state of LSTM
-	\item $z_1$ is conditioned on $x$ and $z_2$
-\end{itemize}
 \begin{figure}
-	\includegraphics[width=1\linewidth]{figures/fhvae_encoder.pdf}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_decoder_0.pdf}
+\end{figure}
+\end{frame}
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Encoder$_{\theta}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_decoder_1.pdf}
 \end{figure}
 \end{frame} 
-
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Encoder$_{\theta}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_decoder_2.pdf}
+\end{figure}
+\end{frame} 
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Encoder$_{\theta}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_decoder_3.pdf}
+\end{figure}
+\end{frame} 
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Encoder$_{\theta}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_decoder_4.pdf}
+\end{figure}
+\end{frame} 
 \setbeamercolor{background canvas}{bg=white}
 \setbeamercolor{normal text}{fg=darkgrey}
 \usebeamercolor[fg]{normal text}
@@ -352,14 +393,33 @@
 \begin{frame}
 \frametitle{FHVAE}
 \framesubtitle{Decoder$_{\phi}$}
-\begin{itemize}
-	\item Based on $z_1$ and $z_2$, form new hidden state
-	\item sample $\hat{x}$, based on that
-\end{itemize}
 \begin{figure}
-	\includegraphics[width=.8\linewidth]{figures/fhvae_decoder.pdf}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_encoder_0.pdf}
 \end{figure}
 \end{frame} 
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Decoder$_{\phi}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_encoder_1.pdf}
+\end{figure}
+\end{frame} 
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=darkgrey}
+\usebeamercolor[fg]{normal text}
+\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
+\begin{frame}
+\frametitle{FHVAE}
+\framesubtitle{Decoder$_{\phi}$}
+\begin{figure}
+	\includegraphics[width=1.05\linewidth]{figures/fhvae_encoder_2.pdf}
+\end{figure}
+\end{frame} 
+
 
 
 
@@ -376,11 +436,11 @@
 %	\item regularize $z_2$ through sequence dependent prior $\tilde{\mu_2}$
 %\end{itemize}
 \begin{align*}
-\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \color{red}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) \color{black}+\color{blue} \alpha \cdot log\;p_{\theta}(\tilde{\mu_2})\color{black} + const.\\
-\text{with }\color{red}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &\color{red}= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
--& \color{red}\mathbb{E}_{q_{\phi}(z_2^{(n)}|x^{(n)})} \left[ D_{KL}(q_{\phi}(z_1^{(n)}|x^{(n)},z_2^{(n)}) ||\underbrace{p_{\theta}(z_1^{(n)})}_{\text{sequ. ind.}}) \right]\\
--&\color{red}D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\tilde{\mu_2})}_{\text{seq. dep. prior}})\\
-\color{black}\text{and }\color{blue}log\;p_{\theta}(\tilde{\mu_2}) &=\color{blue} log\;p(z_{2}^{(i,n)}|\tilde{\mu_2}^{(i)}) - log(\sum_{j=1}^{M}p(z_2^{(i,n)}|\mu_2^{(j)}))
+\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \color{sienna}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) \color{black}+\color{cornflower} \alpha \cdot log\;p_{\theta}(\tilde{\mu_2})\color{black} + const.\\
+\text{with }\color{sienna}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &\color{sienna}= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
+-& \color{sienna}\mathbb{E}_{q_{\phi}(z_2^{(n)}|x^{(n)})} \left[ D_{KL}(q_{\phi}(z_1^{(n)}|x^{(n)},z_2^{(n)}) ||\underbrace{p_{\theta}(z_1^{(n)})}_{\text{sequ. ind.}}) \right]\\
+-&\color{sienna}D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\tilde{\mu_2})}_{\text{seq. dep. prior}})\\
+\color{black}\text{and }\color{cornflower}log\;p_{\theta}(\tilde{\mu_2}) &=\color{cornflower} log\;p(z_{2}^{(i,n)}|\tilde{\mu_2}^{(i)}) - log(\sum_{j=1}^{M}p(z_2^{(i,n)}|\mu_2^{(j)}))
 \end{align*}
 \end{frame} 
 
@@ -436,7 +496,7 @@
 \frametitle{FHVAE}
 \framesubtitle{Objective - Discriminative objective}
 \begin{align*}
-log\;p(sequence\;id | z_2)& = \underbrace{CrossEntropy(\underbrace{\frac{-(\mu_{z_2} - \mu_2)^2}{2 \cdot e^{log\;0.25}}}_{\text{depends on $\mu_{z_2}$ and $\mu_2$}},\;sequence\;id)}_{\text{Try to predict sequence id, with $\mu_{z_2}$}}
+log\;p(sequence\;id | z_2)& = \underbrace{CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_{z_2}^2},\;sequence\;id)}_{\text{Try to predict sequence id with $z_2$}}
 \end{align*}
 \end{frame} 
 
