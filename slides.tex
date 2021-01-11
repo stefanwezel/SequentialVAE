@@ -235,7 +235,7 @@
 	\item Group
 	\begin{itemize}
 		\item Operation and non-empty set $G=(\circ, G)$
-		\item set closed under operation, identity element, inverses elements, associativity
+		\item Set closed under operation, identity element, inverse elements, associativity
 	\end{itemize}
 	\item Symmetry group
 	\begin{itemize}
@@ -245,7 +245,7 @@
 	\item Group action
 	\begin{itemize}
 		\item Results of symmetry transformations on object $X$
-		\item i.e. set of changed order (permuation)
+		\item I.e. set of changed order %(permuation)
 		%For example permutation
 	\end{itemize}
 	\item Direct product
@@ -272,7 +272,7 @@
 	\end{itemize}
 	\item $\rightarrow$ If we observe disentangled group actions in the world, we want to model those
 	%G are all the symmetries of our beautiful world
-	\item We can assume $G$ can be decomposed into direct product of symmetry subgroups $g_i$
+	\item We can assume $G$ can be decomposed into direct product of symmetry subgroups $G_i$
 \end{itemize}
 \end{frame} 
 
@@ -299,9 +299,9 @@
 	\begin{itemize}
 		%representation reflects transformation applied to input
 		\item Decomposition $Z = Z_{1} \times ... \times Z_{n}$
-		\item where $Z_{i}$ is only affected by transformations $G_i$ on $X$% ($G_{j\neq i}$)
-		\item and $Z_i$ invariant to all $G_{j \neq i}$ on $X$ %$Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
-		\item $\rightarrow$ each subspace $Z_i$ can be transformed ONLY by the corresponding symmetry $G_i$ on $W$ (or on $Z$)%(like shift or warp independently)
+		\item $Z_{i}$ only affected by symmetry $G_i$ on $X$% ($G_{j\neq i}$)
+		\item $Z_i$ invariant to all $G_{j \neq i}$% on $X$ %$Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
+		%\item $\rightarrow$ Each subspace $Z_i$ can be transformed ONLY by the corresponding symmetry $G_i$% on $W$ (or on $Z$)%(like shift or warp independently)
 		%\item We can say, $G_i$ results in disentangled group actions in $Z$
 	\end{itemize}
 \end{itemize}
@@ -369,7 +369,7 @@
 	\item Reflect decomposition in $Z= (z_1, z_2)$
 	\item $z_1$: segment, $z_2$: sequence
 	%\item They propose to store sequence information in $z_2$ and segment information in $z_1$
-	\item Find equivariant map $f:W\mapsto Z$, so that $z_2$ is only affected by actions of $G_{sequence}$ and vice versa
+	\item Find equivariant map $f:W\mapsto Z$, so that $z_2$ is only affected by symmetries $G_{sequence}$ and vice versa%actions of $G_{sequence}$ 
 \end{itemize}
 \begin{figure}
 	\includegraphics[width=.9\linewidth]{figures/fm_variables.png}
@@ -486,11 +486,11 @@
 %	\item regularize $z_2$ through sequence dependent prior $\tilde{\mu_2}$
 %\end{itemize}
 \begin{align*}
-\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \color{sienna}\underbrace{\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) \color{black}+\color{black} log\;p_{\theta}(\tilde{\mu_2})\color{black} + const.}_{\text{var. lower bound}} + \color{cornflower}\underbrace{\color{black}\alpha \cdot \color{cornflower}log\;(i|z_2^{(i,n)})}_{\text{discrim.obj.}}\\
-\text{with }\color{sienna}\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &\color{sienna}= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
+\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \color{sienna}\underbrace{\mathcal{L}(\theta, \phi;x^{(n)}|\mu_2) \color{black}+\color{black} log\;p_{\theta}(\mu_2)\color{black} + const.}_{\text{var. lower bound}} + \color{cornflower}\underbrace{\color{black}\alpha \cdot \color{cornflower}log\;(i|z_2^{(i,n)})}_{\text{discrim.obj.}}\\
+\text{with }\color{sienna}\mathcal{L}(\theta, \phi;x^{(n)}|\mu_2) &\color{sienna}= \mathbb{E}_{q_{\phi}(z_1^{(n)},z_2^{(n)}|x^{(n)})}\left[ log\;p_{\theta}(x^{(n)}|z_1^{(n)},z_2^{(n)}) \right]\\
 -& \color{sienna}\mathbb{E}_{q_{\phi}(z_2^{(n)}|x^{(n)})} \left[ D_{KL}(q_{\phi}(z_1^{(n)}|x^{(n)},z_2^{(n)}) ||\underbrace{p_{\theta}(z_1^{(n)})}_{\text{sequ. ind.}}) \right]\\
--&\color{sienna}D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\tilde{\mu_2})}_{\text{seq. dep. prior}})\\
-\color{black}\text{and }\color{cornflower}log\;(i|z_2^{(i,n)}) &=\color{cornflower} log\;p(z_{2}^{(i,n)}|\tilde{\mu_2}^{(i)}) - log(\sum_{j=1}^{M}p(z_2^{(i,n)}|\mu_2^{(j)}))
+-&\color{sienna}D_{KL}(q_{\phi}(z_2^{(n)}|x^{(n)})||\underbrace{p_{\theta}(z_2^{(n)}|\mu_2)}_{\text{seq. dep. prior}})\\
+\color{black}\text{and }\color{cornflower}log\;(i|z_2^{(i,n)}) &=\color{cornflower} log\;p(z_{2}^{(i,n)}|\mu_2^{(i)}) - log(\sum_{j=1}^{M}p(z_2^{(i,n)}|\mu_2^{(j)}))
 \end{align*}
 \end{frame} 
 
@@ -505,13 +505,13 @@
 \begin{itemize}
 	\item What is sequence dependent prior $\mu_2$ (s-vector)?
 	\begin{itemize}
-		\item imagine a word vector 
-		\item s-vector for every sequence
-		\item similar sequence $\rightarrow$ in s-vectors close in euclidean space
+		\item Imagine a word vector 
+		\item S-vector for every sequence
+		\item Similar sequence $\rightarrow$ s-vectors close in euclidean space
 		%\item Ideally, similarities in sequences should  result in s-vectors close in euclidian space
-		\item $g(sequence\;id) = \mu_2$ as differentiable lookup table
+		\item $g(sequence\;id) = \mu_2$ as (differentiable) lookup table
 		\begin{itemize}
-			\item $\rightarrow$ embedding in pytorch, tensorflow
+			\item $\rightarrow$ Embedding in pytorch, tensorflow
 		\end{itemize}
 		%\item During test, s-vector can be found in closed form solution %where there is no seq.id available
 	\end{itemize}
@@ -532,8 +532,8 @@
 %\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &= 
 \underbrace{log\;p(x|z_1, z_2)}_{\text{reconstruction}}\\%prob. of obs. data under learned posterior\\
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_1}, \sigma_{z_1})||\mathcal{N}(0,1))}_{\text{regularize $z_1$ with global prior}}\\
--&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\tilde{\mu_2},0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
-+&\underbrace{log\;p(\tilde{\mu_2}) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\tilde{\mu_2}$ under standard Gaussian prior}}
+-&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\mu_2,0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
++&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\mu_2$ under standard Gaussian prior}}
 \end{align*}
 \end{frame} 
 
@@ -546,11 +546,17 @@
 \begin{frame}
 \frametitle{FHVAE}
 \framesubtitle{Objective - Discriminative objective}
+%\begin{align*}
+%log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_{z_2}^2},\;sequence\;id)
+%\end{align*}
 \begin{align*}
-log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_{z_2}^2},\;sequence\;id)
+log\;p(sequence\;id | z_2)& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{num\;seqs}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
 \end{align*}
 \begin{itemize}
-	\item $\rightarrow$ Try to predict sequence id with $z_2$
+	\item Encourage $z_2^{(i)}$ to be close to $\mu_2^{(i)}$
+	\item and far from all other $\mu_2^{(j \neq i)}$
+%	\item $\rightarrow$ Try to predict sequence id with $z_2$
+%	\item Encourage $\mu_2, z_2$ to become more expressive
 \end{itemize}
 \end{frame} 
 
@@ -567,32 +573,11 @@ log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_
 \mathcal{L}^{dis}(\theta, \phi;x)& = \mathcal{L}(\theta, \phi, X) + \alpha \cdot log\;p(sequence\;id | z_2)
 \end{align*}
 \begin{itemize}
-	\item Joint objective
-	\begin{itemize}
-		\item encourage factorization
-	\end{itemize}
-	\item discriminative objective can be adjusted through $\alpha$ hyperparameter
-	\begin{itemize}
-		\item encourage $\mu_{z_2}$ to become more meaningful
-	\end{itemize}
+	\item Joint objective to encourage factorization
+	%\item discriminative objective can be adjusted through $\alpha$ hyperparameter
+	\item $\alpha$ hyperparameter to weigh discriminative objective
 \end{itemize}
 \end{frame} 
-
-%\setbeamercolor{background canvas}{bg=white}
-%\setbeamercolor{normal text}{fg=darkgrey}
-%\usebeamercolor[fg]{normal text}
-%\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-%\begin{frame}
-%\frametitle{FHVAE}
-%\framesubtitle{Short recap}
-%\begin{itemize}
-	%\item We want to disentangle sequential data with respect to sequence and segment variables
-%	\item We do this by learning two latent variables $z_1$ and $z_2$ with FHVAE
-%	\item Disentanglement between the two is encouraged through loss term%an adaptive regularization
-%	\item Now, we want to see, whether it worked
-%\end{itemize}
-%\end{frame} 
-
 
 
 
@@ -659,12 +644,12 @@ log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_
 \begin{itemize}
 	\item Evidence towards disentangling with respect to sequence-segment decomposition
 	\begin{itemize}
-		\item other decompositions may prove more challenging
+		\item Other decompositions may prove more challenging
 		%\item speaker gender, speaker age, language as more fine grained decompositions
 	\end{itemize}
 	\item Good performance on speaker verification and denoising task
 	\item I had trouble disentangling simple examples
-	\item Questions for you
+	\item Questions for you:
 	\begin{itemize}
 		\item Is learning disentangled representations worth the effort?
 		\item Have there been situations where you wished for an interpretable latent space?
@@ -684,6 +669,7 @@ log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_
 \framesubtitle{}
 \begin{itemize}
 	\item Hsu, W.N., Zhang, Y. and Glass, J., 2017. Unsupervised learning of disentangled and interpretable representations from sequential data. In Advances in neural information processing systems (pp. 1878-1889).
+	\item Hsu, W.N. and Glass, J., 2018. Scalable factorized hierarchical variational autoencoder training. arXiv preprint arXiv:1804.03201.
 	\item Higgins, I., Amos, D., Pfau, D., Racaniere, S., Matthey, L., Rezende, D. and Lerchner, A., 2018. Towards a definition of disentangled representations. arXiv preprint arXiv:1812.02230.
 	\item Scott, W.R., 2012. Group theory. Courier Corporation.
 	\item Kingma, D.P. and Welling, M., 2013. Auto-encoding variational bayes. arXiv preprint arXiv:1312.6114.
@@ -693,177 +679,9 @@ log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_
 
 
 
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{}
-\framesubtitle{}
-\begin{itemize}
-	\item 
-\end{itemize}
-\end{frame} 
-
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{Disentangled Representations Formally}
-\framesubtitle{A field-trip to group theory: Disentangle our example formally}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Signal can get shifted or warped
-	\item the set of these transformations make up a symmetry group
-	\item This can be decomposed into shifts and warps/subsets of original set (all shifted $\times$ all warped)
-	%\item signal's meaning is preserved
-	\item Either content is preserved, or speaker is preserved
-	\item the resulting set of transformed signals are the actions of the symmetry group on the world state
-\end{itemize}
-\end{frame} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{Disentangled Representations Formally}
-\framesubtitle{A field-trip to group theory}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item This symmetry group can be decomposed into symmetry subgroups
-	\item One affects location
-	\item the other affects frequence
-\end{itemize}
-\end{frame} 
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{What are disentangled representations formally? }
-\framesubtitle{Disentangled Group Action}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Group action $G \times X \mapsto X$
-	\item Group decomposes into direct product $G = G_{shifts} \times G_{warps}$
-	\item Is disentangled with respect to decomposition of $G$
-	\begin{itemize}
-		\item if there is decomposition $X = X_{shifted} \times X_{warped}$
-		\item and actions $G_{shifts} \times X_{shifted} \mapsto X_{shifted}$
-		\item and actions $G_{warps} \times X_{warped} \mapsto X_{warped}$
-	\end{itemize}
-\end{itemize}
-\end{frame} 
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{What are disentangled representations formally? }
-\framesubtitle{Disentangled Representation}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Let $W$ be the set of world states (all shifts and warps of signal)
-	\item Generative process $b:W \mapsto O$ (voice to audio processing unit)
-	\item Inference process $h: O \mapsto Z$ (observation to latent space)
-	\item $f:W \mapsto Z, f = h \circ b$
-	\item Now, we know, there is a symmetry group acting on $W$ ($G \times W \mapsto W$)
-	\item We want to find corresponding $G \times Z \mapsto Z$ to reflect symmetry structure of W in Z
-	\item More formal: $g \cdot f(w) = f(g\cdot w)$
-	\item This is whats called an equivariant map (famous example: convnet)
-\end{itemize}
-\end{frame} 
-
-
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{What are disentangled representations formally? }
-\framesubtitle{Disentangled Representation}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Assume symmetry transformations $G$ of $W$ decompose into direct product $G = G_1 \times ... \times G_n$
-	\item Representation is disentangled if
-	\begin{itemize}
-		%\item action $\cdot : G \times Z \mapsto Z$
-		\item equivariant map $f:W \mapsto Z, g \cdot f(w) = f(g\cdot w) \forall g \in G,w \in W$ % %between  $W$ and $Z$
-		\item such a map would split $Z$ into independent subspaces, thus satisfying:
-		\begin{itemize}
-					%representation reflects transformation applied to input
-			\item Decomposition $Z = Z_{shifted} \times Z_{warped}$
-			\item where $Z_{shifted}$ is only affected by shifts in $W$ ($G_{shifts}$)
-			\item and $Z_{warped}$ is only affected by warps in $W$ ($G_{warps}$) % G acts on W this affects Z
-			\item Thus each subspace can be transformed by the corresponding symmetry (like shift or warp independently)
-		\end{itemize}
-				%\item action $\cdot$ on $Z$ is disentangled according to definition from before
-	\end{itemize}
-	\item There may be more criteria (preserving group structure, isomorphisms, ...) but for the intuition this is sufficient
-	%\item (Note that much prior knowledge about our world was injected here)
-\end{itemize}
-\end{frame} 
-
-
-
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{Did they achieve disentanglement}
-\framesubtitle{...}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item With respect to a decomposition into two
-	\item Setting: 10 sentences, 630 speakers
-	\item How can we formulate this in group theory terms?
-\end{itemize}
-\end{frame} 
-
-
-
-
-
-
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{How did they do it?}
-\framesubtitle{Intuition}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item With respect to a decomposition into two
-	\item regularize z2 by sequence dependant prior (lookup table of s-vectors)
-	\item and z1 by sequence independant prior
-\end{itemize}
-\end{frame} 
-
-
-
-
-
-\setbeamercolor{background canvas}{bg=white}
-\setbeamercolor{normal text}{fg=darkgrey}
-\usebeamercolor[fg]{normal text}
-\setbeamertemplate{itemize item}{\color{darkgrey}$\circ$}
-\begin{frame}
-\frametitle{How did they do it?}
-\framesubtitle{Methods}
-\begin{itemize}%\setlength\itemsep{1.5em}
-	\item Sample batch at segment level (instead of sequence level)
-	\item Maximize segment variational lower bound
-	\item (Force z2 to be close to mu2)
-	\item approximation of mu2 is closed form equation (concave function, set derivative to 0)
-\end{itemize}
-\end{frame} 
 
 
 
