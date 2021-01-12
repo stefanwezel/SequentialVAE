@@ -2,6 +2,7 @@
 \documentclass[9pt]{beamer}
 \usepackage{xcolor}
 \definecolor{orange}{HTML}{EF767A}
+\definecolor{lightgray}{HTML}{CCCCCC}
 \definecolor{red}{HTML}{AC454A}
 \definecolor{brown}{HTML}{EAD296}
 \definecolor{darkgrey}{HTML}{313630}
@@ -507,7 +508,7 @@
 	\begin{itemize}
 		\item Imagine a word vector 
 		\item S-vector for every sequence
-		\item Similar sequence $\rightarrow$ s-vectors close in euclidean space
+		\item Similar sequence attributes $\rightarrow$ s-vectors close in euclidean space
 		%\item Ideally, similarities in sequences should  result in s-vectors close in euclidian space
 		\item $g(sequence\;id) = \mu_2$ as (differentiable) lookup table
 		\begin{itemize}
@@ -533,7 +534,7 @@
 \underbrace{log\;p(x|z_1, z_2)}_{\text{reconstruction}}\\%prob. of obs. data under learned posterior\\
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_1}, \sigma_{z_1})||\mathcal{N}(0,1))}_{\text{regularize $z_1$ with global prior}}\\
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\mu_2,0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
-+&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\mu_2$ under standard Gaussian prior}}
+\color{lightgray}+&\color{lightgray}\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\mu_2$ under standard Gaussian prior}}
 \end{align*}
 \end{frame} 
 
@@ -550,11 +551,11 @@
 %log\;p(sequence\;id | z_2)& = CrossEntropy(\frac{-(\mu_{z_2} - \mu_2)^2}{\sigma_{z_2}^2},\;sequence\;id)
 %\end{align*}
 \begin{align*}
-log\;p(sequence\;id | z_2)& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{num\;seqs}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
+log\;p(sequence\;id^{(i)} | z_2^{(i,n)})& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{num\;seqs}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
 \end{align*}
 \begin{itemize}
-	\item Encourage $z_2^{(i)}$ to be close to $\mu_2^{(i)}$
-	\item and far from all other $\mu_2^{(j \neq i)}$
+	\item Encourage $z_2^{(i)}$ to be close to corresponding $\mu_2^{(i)}$
+	\item and far from all other sequence's s-vectors $\mu_2^{(j \neq i)}$
 %	\item $\rightarrow$ Try to predict sequence id with $z_2$
 %	\item Encourage $\mu_2, z_2$ to become more expressive
 \end{itemize}
