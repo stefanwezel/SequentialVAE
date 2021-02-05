@@ -8,8 +8,8 @@
 \usepackage[numbers]{natbib}
 \setlength{\bibsep}{0.0pt}
 
-\title{Title\\ \vspace{0.5cm}\large{Topic}}
-\author{Name \\ E-Mail \\Enrollment number  \\ Seminar}
+\title{Unsupervised Learning of Disentangled and Interpretable Representations from Sequential Data\\ \vspace{0.5cm}\large{Report}}
+\author{Stefan Wezel \\ stefan.wezel@student.uni-tuebingen.de \\4080589  \\ ML4S}
 
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
@@ -22,7 +22,17 @@
 \maketitle
 
 \begin{abstract}
-\lipsum[1]
+%Sequential data often has the intrinsic quality of containing information playing out on multiple time scales. Features can appear low frequencies and on high frequencies. 
+
+%
+%While Variational Autoencoders (VAE) have proven to be a successful methodology on i.e. image data, 
+
+
+
+Information in sequential data is distributed over multiple time scales.
+While if viewed as a single signal, such data might appear noisy, patterns can emerge if we look at just one specific temporal scale.
+\citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner. They propose to factorize sequence level and segment level attributes into distinct latent subspaces.
+Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work.
 \end{abstract}
 
 \section*{Introduction}
@@ -30,27 +40,33 @@
 
 \begin{figure}
     \includegraphics[width=\textwidth]{figures/figure1.png}
-    \caption{\lipsum[1]}
+    \caption{kjsdflkajsdkfjsd}
     \label{fig:figure_01}
 \end{figure}
 
-\section*{Relevant literature}
+\section*{Theoretical Context}
 \lipsum[4-6]\cite{Papamakarios2016, Ardizzone2019}
 
-\section*{Relevant methods}
+\subsection*{Group Theory}
+
+
+\subsection*{Symmetries in Sequential Data}
+
+
+\section*{FHVAE}
 \lipsum[4-6]\cite{Cranmer2020}
 
-\section*{Relevant results}
+\section*{Results}
 \lipsum[7-12]\cite{Brehmer2020}
 
-\section*{Implications and outlook}
-\lipsum[4-12]\cite{Green2020,Greenberg2019}
+\section*{Discussion}
+Further exploit the available data using cross reconstruction.
 
 \section*{Conclusion}
 \lipsum[1-2]
 
-\section*{Acknowledgments}
-\lipsum[1]
+%\section*{Acknowledgments}
+%\lipsum[1]
 
 \bibliographystyle{unsrtnat}
 \bibliography{refs}
