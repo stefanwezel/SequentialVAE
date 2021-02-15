@@ -42,8 +42,17 @@ Different methods have been proposed to learn such disentangled representations 
 Besides technical challenges, this strain of research suffers from the lack of formally defined and agreed upon foundations. The very term of disentangled representations for example is often understood differently in between works. In the following section, we will use the definition, proposed by \citet{higgins2018towards} to put the work by \citet{hsu2017unsupervised} into formal context. 
 
 %It would provide a remedy to problems such as uninterpretable representation.
-
-
+\begin{figure}
+	\centering
+	\includegraphics[width=.6\linewidth]{../figures/intution_3x3_3.pdf}
+	\caption{Changing values of generating factors are reflected in the corresponding latent variables.}
+\end{figure}
+%It would provide a remedy to problems such as uninterpretable representation.
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{../figures/fhvae_complete.pdf}
+	\caption{Architecture of the proposed FHVAE.}
+\end{figure}
 %Since \citet{locatello2019challenging} proved that learning such representations without any supervision or inductive biases is impossible, many works have focused on 
 
 %\lipsum[2-3] (Figure \ref{fig:figure_01}).
@@ -56,11 +65,21 @@ Besides technical challenges, this strain of research suffers from the lack of f
 
 \section*{Viewing the FHVAE though a Formal Lense}
 %\lipsum[4-6]\cite{Papamakarios2016, Ardizzone2019}
+Works on disentanglement often lack a proper formal framework \cite{higgins2018towards}. While claiming to achieve disentanglement, \citet{hsu2017unsupervised} do not provide any formal foundation for their claim. With no formal tools at hand, we cannot formally discuss whether disentanglement was achieved. Thus, we use the following sections to respectively give a theoretical background that defines disentanglement in group theoretic terms, and describe the problem, the FHVAE was designed to solve, in these terms.
 
 \subsection*{The Tools of Group Theory}
+A group is described by a tuple of an operation $\circ$ and a non-empty set $G$. The set has to be closed under the operation, it must contain an identity element, the operation must be associative, and for every element in $G$, there must be an inverse element \cite{benkart1987abstract}.
+%TODO direct product
+Groups can be composed via a direct product. The result of a direct product of groups is itself a group.\\
+ A group that is of particular interest for the field of disentangled representation learning is the symmetry group \cite{benkart1987abstract}.
+A symmetry group consists of a set of transformations that leave a given object $X$ invariant and the operation is the composition of such transformations. A prominent example of a symmetry group is $SE_3$. This symmetry group can be visualized as a set set of vertices $X$ that form an equilateral triangle. Permutations of this set would result in rotations or flips of the triangle. These permutations would be the symmetry transformations of our symmetry group. The operation would be composing multiple permutations.\\
+Another important concept is the group actoin. It is the result of applying a symmetry transformation to an object. In our triangle example, a group action would be the permuted set of vertices.\\
+
+
 
 
 \subsection*{Symmetries in Sequential Data}
+
 
 
 
