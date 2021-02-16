@@ -4,6 +4,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{lipsum}
+\usepackage{amsmath}
 
 \usepackage[numbers]{natbib}
 \setlength{\bibsep}{0.0pt}
@@ -31,7 +32,7 @@
 
 Information in sequential data is often distributed over multiple time scales.
 While if viewed as a single signal, such data might appear noisy. However, patterns can emerge if temporal scales are viewed separately from one another.
-\citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner. They propose to factorize sequence level and segment level attributes into distinct latent subspaces. Architectural and sequence dependent priors create an inductive bias to encourage the proposed factorization. Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work.
+\citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner with a proposed factorized hierarchical variational autoencoder (FHVAE). They aim to factorize sequence level and segment level attributes into distinct latent subspaces. Architectural and sequence dependent priors create an inductive bias to encourage the proposed factorization. Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work.
 \end{abstract}
 
 \section*{Introduction}
@@ -44,15 +45,11 @@ Besides technical challenges, this strain of research suffers from the lack of f
 %It would provide a remedy to problems such as uninterpretable representation.
 \begin{figure}
 	\centering
-	\includegraphics[width=.6\linewidth]{../figures/intution_3x3_3.pdf}
+	\includegraphics[width=.6\linewidth]{../figures/intution_3x3_static.pdf}
 	\caption{Changing values of generating factors are reflected in the corresponding latent variables.}
 \end{figure}
 %It would provide a remedy to problems such as uninterpretable representation.
-\begin{figure}
-	\centering
-	\includegraphics[width=1\linewidth]{../figures/fhvae_complete.pdf}
-	\caption{Architecture of the proposed FHVAE.}
-\end{figure}
+
 %Since \citet{locatello2019challenging} proved that learning such representations without any supervision or inductive biases is impossible, many works have focused on 
 
 %\lipsum[2-3] (Figure \ref{fig:figure_01}).
@@ -70,26 +67,44 @@ Works on disentanglement often lack a proper formal framework \cite{higgins2018t
 \subsection*{The Tools of Group Theory}
 A group is described by a tuple of an operation $\circ$ and a non-empty set $G$. The set has to be closed under the operation, it must contain an identity element, the operation must be associative, and for every element in $G$, there must be an inverse element \cite{benkart1987abstract}.
 %TODO direct product
-Groups can be composed via a direct product. The result of a direct product of groups is itself a group.\\
- A group that is of particular interest for the field of disentangled representation learning is the symmetry group \cite{benkart1987abstract}.
+Multiple groups $G_i$ can be combined via a direct product $G = G_1 \times ... \times G_n$. The result of this direct product is itself a group.\\%, where operations $\circ_{G_i}$ act each respective sets $G_{G_i}$ of each subgroup.
+A group that is of particular interest for the field of disentangled representation learning is the symmetry group \cite{benkart1987abstract}.
 A symmetry group consists of a set of transformations that leave a given object $X$ invariant and the operation is the composition of such transformations. A prominent example of a symmetry group is $SE_3$. This symmetry group can be visualized as a set set of vertices $X$ that form an equilateral triangle. Permutations of this set would result in rotations or flips of the triangle. These permutations would be the symmetry transformations of our symmetry group. The operation would be composing multiple permutations.\\
-Another important concept is the group actoin. It is the result of applying a symmetry transformation to an object. In our triangle example, a group action would be the permuted set of vertices.\\
-
-
+Another important concept is the group action. It is the result of applying a symmetry transformation to an object. In our triangle example, a group action would be the permuted set of vertices.\\
+If a group action on $X$ is the result of a subset $G_i$ of symmetries $G= G_1 \times ... \times G_n$ and only affects a subset $X_i$ of $X$ but leaves all other $X_{j\neq i}$ unchanged, we say it is a disentangled group action. Now, such disentangled group actions are of particular interest for disentangled representation learning, and are generally what we want to model. Note, that if we observe such disentangled group actions, we can infer that $G$ can be decomposed into a direct product of symmetry groups $G_i$ without knowing the underlying processes.\\
+To model such a process, we need to find some symmetry preserving mapping $f:X\mapsto Z$. It should not matter, whether $X$ is mapped to $Z$ followed by applying a symmetry $G$ or $G$ is applied to $X$ and then mapped to $Z$. The resulting space $Z$ should be the same. This is visualized below.
+\begin{align*}
+%\begin{align}
+&X \;\xrightarrow[\text{}]{G}\;\;X\\ 
+f&\downarrow \;\;\;\;\;\;\;f\downarrow\\
+&Z \;\xrightarrow[\text{}]{G}\;\;\;Z
+\end{align*}
+Such a mapping is called an equivariant map and its result is a disentangled representation. The space $Z$ (which we will refer to as latent space in the following) naturally decomposes into a direct product of independent subspaces $Z_1 \times ... \times Z_n$. Moreover, each subspace $Z_i$ is only affected by symmetry $G_i$ on $X$ (as only $X_i$ is changed) and remains invariant to all other $G_{j \neq i}$.\\
+Note that it is only disentangled with respect to a certain decomposition. This is important, as it means we can only discuss whether disentanglement was achieved, if the decomposition is sufficiently clear. Not all decompositions make sense or are possible to model.\\
+As these concepts are rather abstract, we will use the next section to frame the real-world setting of \citet{hsu2017unsupervised} using group theoretic terms to build further intuition and build a formal foundation to discuss their work.
 
 
 \subsection*{Symmetries in Sequential Data}
-
+\citet{hsu2017unsupervised} argue that certain sequential data can be factorized into attributes of different temporal scale. For example, voice recordings can be decomposed into sequence attributes and segment attributes. In this context, sequence attributes are features that remain unchanged over multiple sequences if spoken by the same speaker. Segment attributes on the other hand, vary in(-between?) sequences and are independent from the speaker. They are determined by variables such as linguistic content.\\
+In group theoretic terms, we could state this as the group $G$ acting on audio recordings $X$ is a direct product of $G_{sequence} \times G_{segment}$, because we observe the resulting disentangled group actions of this decomposition. \citet{hsu2017unsupervised} now want to find a representation that is disentangled with respect to this decomposition. They need to find an equivariant map $f:X\mapsto Z$, where $Z = (z_1, z_2)$ is a latent space, so that i.e. $z_2$ is only affected by $G_{sequence}$ and $z_1$ only is affected by $G_{segment}$. Then, the proposed decomposition of symmetries is reflected in $Z$.\\
+For this specific setting, finding such an equivariant map, would allow to separate speaker information from content information. This in turn would enable us to reconstruct given content information using another speaker's voice information. \citet{hsu2017unsupervised} propose this as qualitative assessment of their disentanglement. Quantitative evaluation of disentanglement are notoriously challenging and various metrics have been proposed by an active field of research \cite{locatello2019challenging, higgins2016beta}.
 
 
 
 \section*{FHVAE - Constructing an Equivariant Map}
+\begin{figure}
+	\label{fig:fhave}
+	\centering
+	\includegraphics[width=1\linewidth]{../figures/fhvae_complete.pdf}
+	\caption{Architecture of the proposed FHVAE.}
+\end{figure} 
+To find an equivariant map for the sequential data setting, \citet{hsu2017unsupervised} porpose the FHVAE (see Figure~\ref{fig:fhave}). 
 
 
 \section*{Results}
 
 
-\section*{Discussion}
+\section*{Discussion and Future Work}
 Lack of formal context.
 Lack of evidence for disentaglement.
 Further exploit the available data using cross reconstruction.
