@@ -2,9 +2,25 @@
 \usepackage{neurips,times}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{booktabs}       % professional-quality tables
 \usepackage{graphicx}
 \usepackage{lipsum}
 \usepackage{amsmath}
+\usepackage{multirow}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amssymb,amsmath,bm}
+\usepackage{color,soul}
+\usepackage{multirow}
+\usepackage{mathtools}
+
 
 \usepackage[numbers]{natbib}
 \setlength{\bibsep}{0.0pt}
@@ -96,21 +112,85 @@ For this specific setting, finding such an equivariant map, would allow to separ
 	\label{fig:fhave}
 	\centering
 	\includegraphics[width=1\linewidth]{../figures/fhvae_complete.pdf}
-	\caption{Architecture of the proposed FHVAE.}
+	\caption{Architecture of the proposed FHVAE. Latent segment variable $z_2$ is conditioned on latent sequence variable $z_1$. Together, they are decoded to form distribution over a reconstructed input $\hat{x}$.}
 \end{figure} 
-To find an equivariant map for the sequential data setting, \citet{hsu2017unsupervised} porpose the FHVAE (see Figure~\ref{fig:fhave}). 
+To find an equivariant map for the sequential data setting, \citet{hsu2017unsupervised} porpose the FHVAE (see Figure~\ref{fig:fhave}). They propose a latent subspace factorized into a latent sequence variable $z_1$ and a latent segment variable $z_2$. To form Gaussian distributions over these latent variable, \citet{hsu2017unsupervised} pass an input sequence $x$ to two distinct Long short-term Memory (LSTM) \cite{hochreiter1997long} cells $LSTM_{z_1}$ and $LSTM_{z_2}$. The hidden states of those cells are decoded by Multi-layer Perceptrons (MLP) to give the mean and standard deviation for each latent variable. To decode the latent space, a sample is drawn and passed to another LSTM. This LSTMs hidden state is decoded to form a normal distribution over a reconstructed input $\hat{x}$.\\
+To train the FHVAE \citet{hsu2017unsupervised} propose a a segment variational lower bound, similar to \citet{kingma2013auto} and add a discriminative objective.
+%\begin{align*}
+%\mathcal{L}(\theta, \phi, X)& = \sum_{n=1}^N \underbrace{\mathcal{L}(\theta, \phi;x^{(n)}|\mu_2) + log\;p_{\theta}(\mu_2)+ const.}_{\text{var. lower bound}} + \underbrace{\alpha \cdot log\;(i|z_2^{(i,n)})}_{\text{discrim.obj.}}\\
+%\end{align*}
+This segment variational lower bound can be written as
+\begin{align*}
+\mathcal{L}(\theta, \phi, X)& = %\sum_{n=1}^N \mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) + log\;p_{\theta} + const.\\
+%\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &= 
+\underbrace{log\;p(x|z_1, z_2)}_{\text{reconstruction}}\\%prob. of obs. data under learned posterior\\
+-&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_1}, \sigma_{z_1})||\mathcal{N}(0,1))}_{\text{regularize $z_1$ with global prior}}\\
+-&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\mu_2,0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
++&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\mu_2$ under standard Gaussian prior}}, 
+\end{align*}
+where $\theta$ is the set of decoder parameters, $\phi$ are encoder parameters, and $X$ is a dataset. Note that while $z_1$ gets regularized through a standard Gaussian prior, $z_2$ is discouraged to deviate from a Gaussian distribution centered ad $\mu_2$. \citet{hsu2017unsupervised} introduce $\mu_{2}^{(i)}$ as sequence $(i)$-dependent prior to encourage factorization. This sequence dependent prior can be retrieved through a differentiable lookup table. The discriminative objective 
+\begin{align*}
+log\;p(sequence\;id^{(i)} | z_2^{(i,n)})& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{n}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
+\end{align*}
+is used to build an expressive lookup table, where similarity of sequences is reflected by $\mu_{2}^{(i)}$ close in euclidean space.\\
+\citet{hsu2017unsupervised} refer to the resulting objective
+\begin{align*}
+\mathcal{L}^{dis}(\theta, \phi;x)& = \mathcal{L}(\theta, \phi, X) + \alpha \cdot log\;p(sequence\;id | z_2)
+\end{align*}
+as discriminative segment variational lower bound, where hyperparameter $\alpha$ determines the weight of the discriminative objective.
 
 
-\section*{Results}
 
 
 \section*{Discussion and Future Work}
-Lack of formal context.
-Lack of evidence for disentaglement.
-Further exploit the available data using cross reconstruction.
+\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance quantitatively, and to some extent, qualitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encode speaker dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$, which is based on $z_1$ and should thus ideally only contain information independent from the speaker. The results are displayed below in Table~\ref{tab:eer}.
+
+
+\begin{table}[tbh]
+	\caption{Comparison of speaker verification equal error rate (EER) on the TIMIT test set.}
+	\label{tab:eer}
+	\centering
+	\begin{tabular}{llll}
+		\toprule
+		Method 				& Dimension 	& $\alpha$ 		& EER  				 \\
+		\midrule\midrule
+		\multirow{1}{*}{i-vector}
+		& 100   & -     & 9.52\%    \\
+		\midrule
+		\multirow{1}{*}{$\bm{\mu}_2$}  	& 32			& $10^1$	& \textbf{2.38\%}  	 	\\
+		\midrule
+		\multirow{1}{*}{$\bm{\mu}_1$}
+	& 32			& $10^1$		& 22.47\%   	\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+While using $\mu_2$ results in the lowest EER, they still achieve below random-baseline EER using $\mu_1$, indicating leakage of sequence level information into $z_1$.\\
+This observation reveals a larger problem. While \citet{hsu2017unsupervised} provide visual and audio qualitative examples to demonstrate the grade of disentaglement, they fail in providing sufficient quantitative evidence.\\
+Moreover, their work lacks a formal description and justification of the proposed factorization. We use this work, to 
+We propose to further exploit the used data by introducing a cross-reconstruction loss.
+%TODO elaborate more on this
+ Additionally, we hypothesize that using a hierarchical activation function, as proposed by \citet{shen2018ordered} could further encourage a clean factorization.
+
+
+
+%Moreover, their work lacks formal context, in terms of disentanglement.
+%\citet{hsu2017unsupervised} evaluate the FHVAE on other tasks, such as automatic speech recognition as well and achieve good results.
+%
+%
+%
+%In this work, however, we want to focus on the lack of established formal context.
+%
+%
+%
+%Lack of formal context.
+%Lack of evidence for disentaglement.
+%Further exploit the available data using cross reconstruction.
 
 \section*{Conclusion}
+\citet{hsu2017unsupervised} propose an architecture suited to approximate an equivariant map with respect to a sequence-segment decomposition. They exploit the hierarchical nature of certain sequential data to form an inductive bias towards factorization of different temporal scales. We hypothesize that the notion of a sequence dependent prior could be transferred to other settings. While achieving good performance on considered benchmark task, their work lacks quantitative evidence of achieved disentanglement.
+%Performance on benchmark tasks is not bad.
 
+We advocate for the need of more foundational, formal work on disentanglement. We hypothesize that this would allow to fairly discuss, evaluate and compare methods. The field might be ahead of itself. 
 
 
 \newpage
