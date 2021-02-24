@@ -68,7 +68,7 @@ Besides technical challenges, this strain of research suffers from the lack of f
 
 \begin{figure}
 	\centering
-	\includegraphics[width=.8\linewidth]{../figures/intution_3x3_static.pdf}
+	\includegraphics[width=.9\linewidth]{../figures/intution_3x3_static.pdf}
 	\caption{Changing values of generating factors are reflected in the corresponding latent variables.}
 \end{figure}
 
@@ -135,12 +135,19 @@ as discriminative segment variational lower bound, where hyperparameter $\alpha$
 
 
 
+\begin{figure}[t]\scriptsize
+	\input{../figures/sample_reconstructions}%
+	\centering
+	\caption{Samples signals reconstructed with the FHVAE. Orange lines are generated using the latent variables $z_1$ and $z_2$ with the known generative process used to create the training data. For these samples, the latent variables do not correspond to the actual generative factors values.}
+\end{figure}
+
+
 
 \section*{Discussion and Future Work}
-\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encode speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and should thus ideally only contain information independent of the speaker. The results are displayed below in Table~\ref{tab:eer}.
+\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encode speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and should thus ideally only contain information independent of the speaker. The results are displayed Table~\ref{tab:eer}.
 
 
-\begin{table}[tbh]
+\begin{table}[t]
 	\caption{Comparison of speaker verification equal error rate (EER) on the TIMIT test set.}
 	\label{tab:eer}
 	\centering
@@ -164,23 +171,8 @@ Moreover, their work lacks a formal description and justification of the propose
 %TODO elaborate more on this
 Additionally, we hypothesize that using a hierarchical activation function, as proposed by \citet{shen2018ordered} could further encourage a clean factorization.
 
-\begin{figure}[t]\scriptsize
-\input{../figures/sample_reconstructions}%
-\centering
-\caption{Samples signals reconstructed with the FHVAE. Orange lines are generated using the latent variables $z_1$ and $z_2$ with the known generative process used to create the training data. For these samples, the latent variables do not correspond to the actual generative factors values.}
-\end{figure}
-%Moreover, their work lacks formal context, in terms of disentanglement.
-%\citet{hsu2017unsupervised} evaluate the FHVAE on other tasks, such as automatic speech recognition as well and achieve good results.
-%
-%
-%
-%In this work, however, we want to focus on the lack of established formal context.
-%
-%
-%
-%Lack of formal context.
-%Lack of evidence for disentaglement.
-%Further exploit the available data using cross reconstruction.
+
+
 
 \section*{Conclusion}
 \citet{hsu2017unsupervised} propose an architecture suited to approximate an equivariant map with respect to a sequence-segment decomposition. They exploit the hierarchical nature of certain sequential data to form an inductive bias towards factorization of different temporal scales. We hypothesize that the notion of a sequence-dependent prior could be transferred to other settings. While achieving good performance on considered benchmark tasks, their work lacks quantitative evidence of achieved disentanglement.
