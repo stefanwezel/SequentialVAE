@@ -7,6 +7,8 @@
 \usepackage{lipsum}
 \usepackage{amsmath}
 \usepackage{multirow}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -20,6 +22,13 @@
 \usepackage{color,soul}
 \usepackage{multirow}
 \usepackage{mathtools}
+\usepgfplotslibrary{groupplots}
+
+
+\def\figwidth{.5\linewidth}
+\def\figheight{.15\textheight}
+%\newlength{\figwidth}{\mywidth}
+%\newlength{\figheight}{.2\textheight}
 
 
 \usepackage[numbers]{natbib}
@@ -34,8 +43,8 @@
 \nipsfinalcopy
 
 \begin{document}
-
-
+%\setlength{\figwidth}{.8\textwidth}
+%\setlength{\figheight}{.2\textheight}
 \maketitle
 
 \begin{abstract}
@@ -61,7 +70,7 @@ Besides technical challenges, this strain of research suffers from the lack of f
 %It would provide a remedy to problems such as uninterpretable representation.
 \begin{figure}
 	\centering
-	\includegraphics[width=.6\linewidth]{../figures/intution_3x3_static.pdf}
+	\includegraphics[width=.8\linewidth]{../figures/intution_3x3_static.pdf}
 	\caption{Changing values of generating factors are reflected in the corresponding latent variables.}
 \end{figure}
 %It would provide a remedy to problems such as uninterpretable representation.
@@ -171,8 +180,11 @@ We propose to further exploit the used data by introducing a cross-reconstructio
 %TODO elaborate more on this
  Additionally, we hypothesize that using a hierarchical activation function, as proposed by \citet{shen2018ordered} could further encourage a clean factorization.
 
-
-
+\begin{figure}[t]\scriptsize
+\input{../figures/sample_reconstructions}%
+\centering
+\caption{Samples signals reconstructed with the FHVAE. Orange lines are generated using the latent variables $z_1$ and $z_2$ with the known generative process, used to create the training data.}
+\end{figure}
 %Moreover, their work lacks formal context, in terms of disentanglement.
 %\citet{hsu2017unsupervised} evaluate the FHVAE on other tasks, such as automatic speech recognition as well and achieve good results.
 %
