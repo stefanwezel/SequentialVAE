@@ -56,13 +56,13 @@
 
 
 Information in sequential data is often distributed over multiple time scales.
-While if viewed as a single signal, such data might appear noisy. However, patterns can emerge if temporal scales are viewed separately from one another.
+While if viewed as a single signal, such data might appear noisy. However, patterns can emerge if temporal scales are inspected separately from one another.
 \citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner with a proposed factorized hierarchical variational autoencoder (FHVAE). They aim to factorize sequence level and segment level attributes into distinct latent subspaces. Architectural and sequence-dependent priors create an inductive bias to encourage the proposed factorization. Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work \footnote{An implementation of \citet{hsu2017unsupervised}'s method and our experiments can be found at \url{www.github.com/wastedsummer/SequentialVAE}}.
 \end{abstract}
 
 \section*{Introduction}
 Intuitively, disentangled representations are representations that are reflective of the underlying generating factors of observed data in thus they are encoded as separate latent subspaces (See Figure~\ref{fig:intuition}). This notion is already present in classical factor analysis work, where it is referred to as independent component analysis (ICA) \cite{comon1992independent}.\\
-However, many problems cannot be solved in a linear fashion. The vast success of deep neural networks (DNN) can be largely attributed to the fact that they are very powerful non-linear function approximators. Thus, making them a promising method to solve the long-standing problem of non-linear ICA.\\
+However, many problems cannot be solved in a linear fashion. The success of deep neural networks (DNN) can be largely attributed to the fact that they are very powerful non-linear function approximators. Thus, making them a promising method to solve the long-standing problem of non-linear ICA.\\
 Different methods have been proposed to learn such disentangled representations \cite{higgins2016beta, chen2016infogan, kulkarni2015deep} with varying success. Many of these works focus on image data. However, it has been shown by \citet{locatello2019challenging} that disentangled representations cannot be learned without introducing any kind of supervision or inductive biases. Sequential data, while having been explored less, offers an inherent structure that can be exploited to construct inductive biases as has been proposed by \citet{hsu2017unsupervised}.\\
 Besides technical challenges, this strain of research suffers from the lack of formally defined and agreed upon foundations. The very term of disentangled representations for example is often understood differently in between works. In the following section, we will use the definition proposed by \citet{higgins2018towards} to put the work by \citet{hsu2017unsupervised} into formal context.
 
@@ -93,15 +93,15 @@ To model such a process, we need to find some symmetry preserving mapping $f:X\m
 f&\downarrow \;\;\;\;\;\;\;f\downarrow\\
 &Z \;\xrightarrow[\text{}]{G}\;\;\;Z
 \end{align*}
-Such a mapping is called an equivariant map. Its result is a disentangled representation. The space $Z$ (which we will refer to as latent space in the following) naturally decomposes into a direct product of independent subspaces $Z_1 \times ... \times Z_n$. Moreover, each subspace $Z_i$ is only affected by symmetry $G_i$ on $X$ (as only $X_i$ is changed) and remains invariant to all other $G_{j \neq i}$.\\
+Such a mapping is called an equivariant map. Its result is a disentangled representation. The space $Z$ (which we will also refer to as latent space in the following) naturally decomposes into a direct product of independent subspaces $Z_1 \times ... \times Z_n$. Moreover, each subspace $Z_i$ is only affected by symmetry $G_i$ on $X$ (as only $X_i$ is changed) and remains invariant to all other $G_{j \neq i}$.\\
 Note that it is only disentangled with respect to a certain decomposition. This is important, as it means we can only discuss whether disentanglement was achieved if the decomposition is sufficiently clear. Not all decompositions make sense or are possible to model.\\
-As these concepts are rather abstract, we will use the next section to frame the real-world setting of \citet{hsu2017unsupervised} using group-theoretic terms to build further intuition and build a formal foundation to discuss their work.
+As these concepts are rather abstract, we will use the next section to frame the real-world setting of \citet{hsu2017unsupervised} using group-theoretic terms to build further intuition and a formal foundation to discuss their work.
 
 
 \subsection*{Symmetries in Sequential Data}
 \citet{hsu2017unsupervised} argue that certain sequential data can be factorized into attributes of different temporal scales. For example, voice recordings can be decomposed into sequence attributes and segment attributes. In this context, sequence attributes are features that remain unchanged over multiple sequences if spoken by the same speaker. Segment attributes, on the other hand, vary in sequences and are independent of the speaker. They are determined by variables such as linguistic content.\\
 In group-theoretic terms, we could state this as the group $G$ acting on audio recordings $X$ is a direct product of $G_{sequence} \times G_{segment}$, because we observe the resulting disentangled group actions of this decomposition. \citet{hsu2017unsupervised} now want to find a representation that is disentangled with respect to this decomposition. They need to find an equivariant map $f:X\mapsto Z$, where $Z = (z_1, z_2)$ is a latent space, so that i.e. $z_2$ is only affected by $G_{sequence}$ and $z_1$ only is affected by $G_{segment}$. Then, the proposed decomposition of symmetries is reflected in $Z$.\\
-For this specific setting, finding such an equivariant map would allow separating speaker information from content information. This in turn would enable us to reconstruct given content information using another speaker's voice information. \citet{hsu2017unsupervised} propose this as a qualitative assessment of their disentanglement. Quantitative evaluation of disentanglement is notoriously challenging and various metrics have been proposed by an active field of research \cite{locatello2019challenging, higgins2016beta}. \citet{hsu2017unsupervised} propose a speaker verification task to quantitatively evaluate the separation of sequence and segment attributes in the latent space.
+For this specific setting, finding such an equivariant map would allow separating speaker information from content information. This in turn would enable us to reconstruct given content information using another speaker's voice information. \citet{hsu2017unsupervised} propose this as a qualitative assessment of their disentanglement. Quantitative evaluation of disentanglement is notoriously challenging and various metrics have been proposed by an active field of research \cite{locatello2019challenging, higgins2016beta}. As we will see later, \citet{hsu2017unsupervised} propose a speaker verification task to quantitatively evaluate the separation of sequence and segment attributes in the latent space.
 
 
 
@@ -110,20 +110,20 @@ For this specific setting, finding such an equivariant map would allow separatin
 \begin{figure}
 	\centering
 	\includegraphics[width=1\linewidth]{../figures/fhvae_complete.pdf}
-	\caption{The architecture of the proposed FHVAE. Latent segment variable $z_2$ is conditioned on latent sequence variable $z_1$. Together, they are decoded to form distribution over a reconstructed input $\hat{x}$.}
+	\caption{The architecture of the proposed FHVAE. The latent segment variable $z_2$ is conditioned on latent sequence variable $z_1$. Together, they are decoded to parameterize a normal distribution over a reconstructed input $\hat{x}$.}
 	\label{fig:fhave}
 \end{figure} 
 To find an equivariant map for the sequential data setting, \citet{hsu2017unsupervised} propose the FHVAE (see Figure~\ref{fig:fhave}). Its encoder maps to a latent subspace factorized into a latent sequence variable $z_1$ and a latent segment variable $z_2$. To form Gaussian distributions over these latent variable, \citet{hsu2017unsupervised} pass an input sequence $x$ to two distinct Long short-term Memory (LSTM) \cite{hochreiter1997long} cells $LSTM_{z_1}$ and $LSTM_{z_2}$. The hidden states of those cells are decoded by Multi-layer Perceptrons (MLP) to give the mean and standard deviation for each latent variable. To decode the latent space, a sample is drawn and passed to another LSTM. This LSTMs hidden state is decoded to form a normal distribution over a reconstructed input $\hat{x}$.\\
-To train the FHVAE \citet{hsu2017unsupervised} propose a segment variational lower bound, based on \citet{kingma2013auto} and add a discriminative objective. This segment variational lower bound can be written as
+To train the FHVAE, \citet{hsu2017unsupervised} propose a segment variational lower bound, based on \citet{kingma2013auto} and add a discriminative objective. This segment variational lower bound can be written as
 \begin{align*}
 \mathcal{L}(\theta, \phi, X)& = %\sum_{n=1}^N \mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) + log\;p_{\theta} + const.\\
 %\mathcal{L}(\theta, \phi;x^{(n)}|\tilde{\mu_2}) &= 
 \underbrace{log\;p(x|z_1, z_2)}_{\text{reconstruction}}\\%prob. of obs. data under learned posterior\\
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_1}, \sigma_{z_1})||\mathcal{N}(0,1))}_{\text{regularize $z_1$ with global prior}}\\
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\mu_2,0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
-+&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{prob. of $\mu_2$ under standard Gaussian prior}}, 
++&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{scaled prob. of $\mu_2$ under standard Gaussian prior}}, 
 \end{align*}
-where $\theta$ is the set of decoder parameters, $\phi$ are encoder parameters, and $X$ is a dataset. Note that while $z_1$ gets regularized through a standard Gaussian prior, $z_2$ is discouraged to deviate from a Gaussian distribution centered ad $\mu_2$. \citet{hsu2017unsupervised} introduce $\mu_{2}^{(i)}$ as sequence $(i)$-dependent prior to encourage factorization. This sequence-dependent prior can be retrieved through a differentiable lookup table. The discriminative objective 
+where $\theta$ is the set of decoder parameters, $\phi$ are encoder parameters, and $X$ are training samples. Note that while $z_1$ gets regularized through a standard Gaussian prior, $z_2$ is discouraged to deviate from a Gaussian distribution centered ad $\mu_2$. \citet{hsu2017unsupervised} introduce $\mu_{2}^{(i)}$ as sequence $(i)$-dependent prior to encourage factorization. This sequence-dependent prior can be retrieved through a differentiable lookup table. The discriminative objective 
 \begin{align*}
 log\;p(sequence\;id^{(i)} | z_2^{(i,n)})& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{n}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
 \end{align*}
@@ -139,16 +139,14 @@ as discriminative segment variational lower bound, where hyperparameter $\alpha$
 \begin{figure}[t]\scriptsize
 	\input{../figures/sample_reconstructions}%
 	\centering
-	\caption{Samples signals reconstructed with the FHVAE. Orange lines are generated using the latent variables $z_1$ and $z_2$ with the known generative process used to create the training data. For these samples, the latent variables do not correspond to the actual generative factors values.}
+	\caption{Sample signals reconstructed with the FHVAE. Blue lines are generated using the latent variables $z_1$ and $z_2$ with the known generative process used to create the training data. For these samples, the latent variables do not correspond to the actual generative factors values.}
 	\label{fig:samples}
 \end{figure}
 
 
 
 \section*{Discussion and Future Work}
-\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encode speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and should thus ideally only contain information independent of the speaker. The results are displayed Table~\ref{tab:eer}.
-
-
+\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encapsulate speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and should thus ideally only contain information independent of the speaker. The results are displayed Table~\ref{tab:eer}.
 \begin{table}[t]
 	\caption{Comparison of speaker verification equal error rate (EER) on the TIMIT test set.}
 	\centering
@@ -167,8 +165,7 @@ as discriminative segment variational lower bound, where hyperparameter $\alpha$
 	\end{tabular}
 	\label{tab:eer}
 \end{table}
-While using $\mu_2$ results in the lowest EER, they still achieve below random-baseline EER using $\mu_1$, indicating leakage of sequence-level information into $z_1$.\\
-This observation reveals a larger problem. While \citet{hsu2017unsupervised} provide visual and audio qualitative examples to demonstrate the grade of disentanglement, they fail in providing sufficient quantitative evidence. Moreover, their work lacks a formal description and justification of the proposed factorization.\\
+While using $\mu_2$ results in the lowest EER, they still achieve below random-baseline EER using $\mu_1$, indicating leakage of sequence-level information into $z_1$. This observation reveals a larger problem. While \citet{hsu2017unsupervised} provide visual and audio qualitative examples to demonstrate the grade of disentanglement, they fail in providing sufficient quantitative evidence. Moreover, their work lacks a formal description and justification of the proposed factorization.\\
 %TODO elaborate on toy example 
 To further investigate the level of disentanglement, we evaluate the FHVAE on a toy dataset with a known generative process. While achieving good reconstruction of signals, the latent variables are not reflective of the generative factors. Sample results are shown in Figure~\ref{fig:samples}.\\
 To improve disentanglement, we propose to further exploit the used data by introducing a cross-reconstruction loss \cite{schonfeld2019generalized}. Additionally, we hypothesize that using a hierarchical activation function, as proposed by \citet{shen2018ordered} could further encourage a clean factorization.
