@@ -57,7 +57,7 @@
 
 Information in sequential data is often distributed over multiple time scales.
 While if viewed as a single signal, such data might appear noisy. However, patterns can emerge if temporal scales are inspected separately from one another.
-\citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner with a proposed factorized hierarchical variational autoencoder (FHVAE). They aim to factorize sequence level and segment level attributes into distinct latent subspaces. Architectural and sequence-dependent priors create an inductive bias to encourage the proposed factorization. Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work \footnote{An implementation of \citet{hsu2017unsupervised}'s method and our experiments can be found at \url{www.github.com/wastedsummer/SequentialVAE}}.
+\citet{hsu2017unsupervised} leverage this intrinsic structure to learn disentangled representations from sequential data in an unsupervised manner with a proposed factorized hierarchical variational autoencoder (FHVAE). They aim to factorize sequence level and segment level attributes into distinct latent subspaces. Architectural and sequence-dependent priors create an inductive bias to encourage the proposed factorization. Here, we put their work into a formal context, explore the proposed methodology, and reflect critically on their work \footnote{An implementation of \citet{hsu2017unsupervised}'s method and our experiments can be found at \url{www.github.com/wastedsummer/SequentialVAE}}. %TODO
 \end{abstract}
 
 \section*{Introduction}
@@ -123,7 +123,7 @@ To train the FHVAE, \citet{hsu2017unsupervised} propose a segment variational lo
 -&\underbrace{D_{KL}(\mathcal{N}(\mu_{z_2}, \sigma_{z_2})||\mathcal{N}(\mu_2,0.5))}_{\text{regularize $z_2$ with seq. dep. prior $\mu_2$}}\\
 +&\underbrace{log\;p(\mu_2) \cdot \frac{1}{seq.\;length}}_{\text{scaled prob. of $\mu_2$ under standard Gaussian prior}}, 
 \end{align*}
-where $\theta$ is the set of decoder parameters, $\phi$ are encoder parameters, and $X$ are training samples. Note that while $z_1$ gets regularized through a standard Gaussian prior, $z_2$ is discouraged to deviate from a Gaussian distribution centered ad $\mu_2$. \citet{hsu2017unsupervised} introduce $\mu_{2}^{(i)}$ as sequence $(i)$-dependent prior to encourage factorization. This sequence-dependent prior can be retrieved through a differentiable lookup table. The discriminative objective 
+where $\theta$ is the set of decoder parameters, $\phi$ are encoder parameters, and $X$ are training samples. Note that while $z_1$ gets regularized through a standard Gaussian prior, $z_2$ is discouraged to deviate from a Gaussian distribution centered at $\mu_2$. \citet{hsu2017unsupervised} introduce $\mu_{2}^{(i)}$ as sequence $(i)$-dependent prior to encourage factorization. This sequence-dependent prior can be retrieved through a differentiable lookup table. The discriminative objective 
 \begin{align*}
 log\;p(sequence\;id^{(i)} | z_2^{(i,n)})& = log\;\frac{p(\mu_{z_2}^{(i,n)}|\mu_2^{(i)})}{\sum^{n}_{j=1}	p(\mu_{z_2}^{(i,n)}|\mu_2^{(j)})}
 \end{align*}
@@ -146,7 +146,7 @@ as discriminative segment variational lower bound, where hyperparameter $\alpha$
 
 
 \section*{Discussion and Future Work}
-\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encapsulate speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and should thus ideally only contain information independent of the speaker. The results are displayed Table~\ref{tab:eer}.
+\citet{hsu2017unsupervised} evaluate the FHVAE on different tasks. They propose an unsupervised speaker verification task to measure performance, and to some extent, quantitatively assess the grade of disentanglement. They outperform an i-vector baseline \footnote{According to \citet{hsu2017unsupervised}, i-vector is used in state-of-the-art speaker verification approaches. It is a low dimensional subspace of a Gaussian mixture universal background model which ideally only contains speaker information.}. To identify speakers, they use $\mu_2$ which ideally should only encapsulate speaker-dependent attributes. As a sanity check, they further introduce a segment vector $\mu_1$. This variable is based on $z_1$ and thus, should ideally only contain information independent of the speaker. The results are displayed in Table~\ref{tab:eer}.
 \begin{table}[t]
 	\caption{Comparison of speaker verification equal error rate (EER) on the TIMIT test set.}
 	\centering
